@@ -66,7 +66,6 @@ class ResizingCanvas(tk.Canvas):
 	def canvas_clicked(self, event):
 		"""Callback for the click-event on the canvas area
 		Draws a point at the clicked position"""
-		print(str(self.hscale) + " " + str(self.hscale))
 		# get relative field coordinates
 		q = math.floor(event.x / (self.fieldsize * self.wscale))
 		r = math.floor(event.y / (self.fieldsize * self.hscale))
