@@ -1,6 +1,6 @@
-colors = ["black", "red", "green", "blue", "orange", "cyan",
-          "magenta", "yellow", "gray", "white", "brown",
-          "pink", "purple", "violet"]
+colors = ["Black", "Red", "Green", "Blue", "Orange", "Cyan",
+          "Magenta", "Yellow", "Gray", "White", "Brown",
+          "Pink", "Purple", "Violet"]
 
 
 def getGroups(nodes):
