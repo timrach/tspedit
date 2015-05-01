@@ -40,7 +40,7 @@ def importTSP(callback):
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
         nodes, groups = parseTSPFile(filename.name)
-        callback(nodes, groups)
+        callback(os.path.basename(filename.name),nodes, groups)
 
 
 def exportTSP(nodes, scale):
