@@ -76,8 +76,13 @@ def importTSP(callback):
         callback(os.path.basename(filename.name),nodes, groups)
 
 
-def exportTSP(nodes, scale, callback):
-    filename = asksaveasfile(defaultextension=".tsp")
+def exportTSP(nodes, scale, callback, preFilename=None):
+    filename = preFilename
+    #check if the function was called with a filename
+    if filename == None:
+        filename = asksaveasfile(defaultextension=".tsp")
+        print(filename)
+    #check if the user did select a file
     if filename:
         f = open(filename.name, 'w')
         f.write("NAME : " + os.path.basename(filename.name) + "\n")
