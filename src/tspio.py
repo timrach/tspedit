@@ -2,6 +2,7 @@ import re
 import ast
 import os
 from tkinter.filedialog import asksaveasfile, askopenfile
+import tsputil
 
 
 def parseTSPFile(file):
@@ -128,7 +129,8 @@ def exportTIKZ(nodes, scale):
             f.write(
                 """\\addplot [color=black,mark size=5.0pt,
                         only marks,mark=*,mark options={solid,
-                        fill=""" + colors[g] + "},forget plot]\n")
+                        fill=""" + tsputil.colors[g].lower() +
+                "},forget plot]\n")
             f.write("table[row sep=crcr]{%\n")
             for n in nodes:
                 if(n.color == g):
