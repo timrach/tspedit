@@ -31,7 +31,6 @@ class ResizingCanvas(tk.Canvas):
         # determine the ratio of old width/height to new width/height
         wscale = float(event.width) / self.width
         hscale = float(event.height) / self.height
-        #bscale = max(wscale,hscale)
         self.width = event.width
         self.height = event.height
         # resize the canvas
