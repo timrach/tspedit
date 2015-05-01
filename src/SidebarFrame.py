@@ -29,14 +29,15 @@ class SidebarFrame(tk.Frame):
         color_list_label = tk.Label(self, text="Colors:")
 
         # COLOR LISTBOX
-        self.color_listBox = tk.Listbox(self, height=5, selectmode=tk.SINGLE)
-        # Fill color listbox with colors from the colors array
-        for (i, c) in enumerate(colors):
-            self.color_listBox.insert(i, c)
-        # register color listbox for the selection even
-        # if a color is selected, the global color variable will be
+        self.colorVar = tk.StringVar(self)
+        self.colorVar.set(colors[0]) # default value
+        # register color option for the selection event
+        # if a color is selected, the global color will be
         # switched by the switchColor method
-        self.color_listBox.bind('<<ListboxSelect>>', self.switchColor)
+        self.colorVar.trace("w", self.switchColor)
+        self.colorOption = tk.OptionMenu(*((self, self.colorVar) + tuple(colors)))
+        
+        
 
         # NODE LIST LABEL
         self.node_list_label = tk.Label(self, text="Coordinates (0):")
@@ -44,7 +45,7 @@ class SidebarFrame(tk.Frame):
         self.node_listBox = tk.Listbox(self)
 
         color_list_label.pack(anchor=tk.W)
-        self.color_listBox.pack(anchor=tk.W)
+        self.colorOption.pack(anchor=tk.W)
         self.node_list_label.pack(anchor=tk.W)
         self.node_listBox.pack(anchor=tk.W)
         clear_button.pack(anchor=tk.W)
@@ -63,7 +64,7 @@ class SidebarFrame(tk.Frame):
     def deleteNode(self, nid):
         self.node_listBox.delete(nid)
 
-    def switchColor(self, event):
+    def switchColor(self, *args):
         """ changes the colorvariable according to the selected item in the
         color listbox"""
-        self.parent.selectedColor = self.color_listBox.curselection()[0]
+        self.parent.selectedColor = colors.index(self.colorVar.get())
