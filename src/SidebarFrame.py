@@ -59,11 +59,12 @@ class SidebarFrame(tk.Frame):
 
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
-        self.nodeListLabelFrame.pack(anchor=tk.W, fill=tk.X, expand=1)
+        infoLabelFrame.pack(side=tk.BOTTOM, fill=tk.X, anchor=tk.W)
+        self.infoListBox.pack(anchor=tk.W)
+        self.nodeListLabelFrame.pack(side=tk.BOTTOM, anchor=tk.W,
+                                     fill=tk.X)
         self.node_listBox.pack(anchor=tk.W)
         buttonFrame.pack(side=tk.BOTTOM, fill=tk.X)
-        infoLabelFrame.pack(fill=tk.X, expand=1, anchor=tk.W)
-        self.infoListBox.pack(anchor=tk.W)
 
     def deleteButtonClicked(self):
         toDelete = self.node_listBox.curselection()
