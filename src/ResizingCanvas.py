@@ -90,10 +90,10 @@ class ResizingCanvas(tk.Canvas):
 		the data to the nodes and points arrays and the nodes listbox"""
 		index = y * self.cols + x
 		self.points[index] = self.create_oval(
-			(x * self.fieldsize + self.linewidth2)*self.wscale,
-			(y * self.fieldsize + self.linewidth2)*self.hscale,
-			((x + 1) * self.fieldsize)*self.wscale,
-			((y + 1) * self.fieldsize)*self.hscale,
+			(x * self.fieldsize + 2)*self.wscale,
+			(y * self.fieldsize + 2)*self.hscale,
+			((x + 1) * self.fieldsize - 2)*self.wscale,
+			((y + 1) * self.fieldsize - 2)*self.hscale,
 			fill=color)
 	
 	def deleteNode(self,x,y):
