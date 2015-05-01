@@ -7,3 +7,6 @@ colors = ["Black", "Red", "Green", "Blue", "Orange", "Cyan",
           "Pink", "Purple", "Violet"]
 
 
+class FilenameWrapper:
+    def __init__(self,filename):
+        self.name = filename
