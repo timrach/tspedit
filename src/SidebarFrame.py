@@ -47,7 +47,11 @@ class SidebarFrame(tk.Frame):
         # NODE LIST Frame
         self.nodeListLabelFrame = tk.LabelFrame(self, text="Coordinates (0):", padx=5,pady=10)
         # NODE LIST BOX
-        self.node_listBox = tk.Listbox(self.nodeListLabelFrame,borderwidth=0)
+        
+        scrollbar = tk.Scrollbar(self.nodeListLabelFrame, orient=tk.VERTICAL)
+        self.node_listBox = tk.Listbox(self.nodeListLabelFrame,borderwidth=0,yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.node_listBox.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
