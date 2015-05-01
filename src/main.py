@@ -27,6 +27,18 @@ class MainApplication(tk.Frame):
         self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+        menubar = tk.Menu(parent)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Import .tsp", command=self.importTSP)
+        filemenu.add_command(label="Export .tsp", command=self.exportTSP)
+        filemenu.add_separator()
+        filemenu.add_command(label="Export TIKZ",command=self.exportTIKZ)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=parent.quit)
+        
+        menubar.add_cascade(label="File", menu=filemenu)
+        parent.config(menu=menubar)
+
     """ CLASS METHODS """
 
     def clear(self):
