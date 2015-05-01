@@ -1,5 +1,5 @@
 import tkinter as tk
-from tsputil import *
+import tsputil
 
 
 class SidebarFrame(tk.Frame):
@@ -36,13 +36,13 @@ class SidebarFrame(tk.Frame):
 
         # COLOR OPTIONMENU
         self.colorVar = tk.StringVar(colorFrame)
-        self.colorVar.set(colors[0])  # default value
+        self.colorVar.set(tsputil.colors[0])  # default value
         # register color option for the selection event
         # if a color is selected, the global color will be
         # switched by the switchColor method
         self.colorVar.trace("w", self.switchColor)
         self.colorOption = tk.OptionMenu(
-            *((colorFrame, self.colorVar) + tuple(colors)))
+            *((colorFrame, self.colorVar) + tuple(tsputil.colors)))
         self.colorOption.pack(side=tk.RIGHT, anchor=tk.W)
 
         # NODE LIST Frame

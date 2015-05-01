@@ -69,7 +69,7 @@ class MainApplication(tk.Frame):
 
     def solveTSP(self, event=None):
         # first export current problem to a temporary file
-        dummy = FilenameWrapper("tmpfile.tsp")
+        dummy = tsputil.FilenameWrapper("tmpfile.tsp")
         tspio.exportTSP(
             self.nodes, self.scale,
             lambda f: tsputil.solveTSP(f, self.putSolution), dummy)
@@ -123,7 +123,7 @@ class MainApplication(tk.Frame):
 
     def addNode(self, xc, yc):
         # pass data to frames
-        self.canvas.addNode(xc, yc, colors[self.selectedColor])
+        self.canvas.addNode(xc, yc, tsputil.colors[self.selectedColor])
         # update data
         new_node = Node(len(self.nodes), xc, yc, self.selectedColor)
         self.nodes.append(new_node)
