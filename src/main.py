@@ -56,6 +56,7 @@ class MainApplication(tk.Frame):
 
         menubar.add_cascade(label="File", menu=filemenu)
         menubar.add_cascade(label="TSP", menu=tspmenu)
+        menubar.add_cascade(label="Editor", menu=editormenu)
         parent.config(menu=menubar)
 
     """ CLASS METHODS """
