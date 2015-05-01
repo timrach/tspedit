@@ -10,8 +10,8 @@ class CanvasFrame(tk.Frame):
 		self.parent = parent
 
 		""" DATA """
-		self.width = 1080  # Canvaswidth
-		self.height = 660  # Canvasheight
+		self.width = 1085  # Canvaswidth
+		self.height = 665  # Canvasheight
 
 		""" GUI """
 

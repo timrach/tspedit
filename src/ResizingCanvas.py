@@ -48,16 +48,14 @@ class ResizingCanvas(tk.Canvas):
 		"""Draws the grid for the node positions on the canvas"""
 		# draw vertical lines
 		for x in range(0, self.cols + 1):
-			xcoord = x * self.fieldsize + self.linewidth
-			self.create_line(xcoord, 0 + self.linewidth,
-							 xcoord, self.rows * self.fieldsize + self.linewidth,
-							 fill="#ddd")
+			xcoord = x * self.fieldsize
+			self.create_line(
+				xcoord, 0, xcoord, self.rows * self.fieldsize, fill="#ddd")
 		# draw horizontal lines
 		for y in range(0, self.rows + 1):
-			ycoord = y * self.fieldsize + self.linewidth
-			self.create_line(self.linewidth,              ycoord,
-							 self.cols * self.fieldsize + self.linewidth, ycoord,
-							 fill="#ddd")
+			ycoord = y * self.fieldsize
+			self.create_line(
+				0,ycoord,self.cols * self.fieldsize, ycoord, fill="#ddd")
 
 	def onMotion(self,event):
 		# get relative field coordinates
