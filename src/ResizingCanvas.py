@@ -108,7 +108,7 @@ class ResizingCanvas(tk.Canvas):
                                 (y1*self.fieldsize + (self.fieldsize/2)) * self.hscale,
                                 (x2*self.fieldsize + (self.fieldsize/2)) * self.wscale,
                                 (y2*self.fieldsize + (self.fieldsize/2)) * self.hscale,
-                                fill="black",tags="path_line, all")
+                                fill="black",tags="path_line")
         self.move(
             line, self.padding * self.wscale, self.padding * self.hscale)
 
