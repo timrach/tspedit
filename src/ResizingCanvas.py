@@ -47,12 +47,14 @@ class ResizingCanvas(tk.Canvas):
         for x in range(0, self.cols + 1):
             xcoord = x * self.fieldsize
             self.create_line(
-                xcoord, 0, xcoord, self.rows * self.fieldsize, fill="#ddd")
+                xcoord, 0, xcoord, self.rows * self.fieldsize, 
+                fill="#ddd", tags="grid")
         # draw horizontal lines
         for y in range(0, self.rows + 1):
             ycoord = y * self.fieldsize
             self.create_line(
-                0, ycoord, self.cols * self.fieldsize, ycoord, fill="#ddd")
+                0, ycoord, self.cols * self.fieldsize, ycoord, 
+                fill="#ddd", tags="grid")
         # draw 0,0 indicator
         # vertical arrow for y axis
         self.create_line(
