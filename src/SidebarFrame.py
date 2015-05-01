@@ -98,6 +98,8 @@ class SidebarFrame(tk.Frame):
         for i in range(nid, len(self.parent.nodes)):
             node = self.parent.nodes[i]
             self.node_listBox.insert(node.id, node.toString())
+        self.nodeListLabelFrame.config(text="Coordinates (" +
+                                       str(self.node_listBox.size()) + "):")
 
     def switchColor(self, *args):
         """ changes the colorvariable according to the selected item in the
