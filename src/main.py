@@ -59,6 +59,9 @@ class MainApplication(tk.Frame):
         tspio.exportTSP(
             self.nodes, self.scale, lambda f :tsputil.solveTSP(f,self.putSolution), dummy)
 
+    def clearPath(self):
+        self.canvas.clearPath()
+
     def putSolution(self,solution):
         self.canvas.putSolution(self.nodes,solution)
 
