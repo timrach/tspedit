@@ -56,10 +56,15 @@ class SidebarFrame(tk.Frame):
         scrollbar.config(command=self.node_listBox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+        buttonFrame = tk.Frame(self.nodeListLabelFrame)
+        addButton = tk.Button(buttonFrame,text="+").pack(side=tk.LEFT)
+        deleteButton = tk.Button(buttonFrame,text="-").pack(side=tk.LEFT)
+
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
         self.nodeListLabelFrame.pack(anchor=tk.W, fill=tk.X, expand=1)
         self.node_listBox.pack(anchor=tk.W)
+        buttonFrame.pack(side=tk.BOTTOM,fill=tk.X)
         clear_button.pack(anchor=tk.W, fill=tk.X, side=tk.TOP)
         export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
