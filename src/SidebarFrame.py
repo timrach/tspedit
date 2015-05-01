@@ -10,21 +10,6 @@ class SidebarFrame(tk.Frame):
         self.configure(padx=10, pady=10)
         self.parent = parent
 
-        # EXPORT TSP BUTTON
-        export_tsp_button = tk.Button(
-            self, text="Export .tsp File", command=self.parent.exportTSP)
-
-        # IMPORT TSP BUTTON
-        import_tsp_button = tk.Button(
-            self, text="Import .tsp File", command=self.parent.importTSP)
-
-        # EXPORT TIKZ BUTTON
-        export_tikz_button = tk.Button(
-            self, text="Export tikz", command=self.parent.exportTIKZ)
-
-        # CLEAR BUTTON
-        clear_button = tk.Button(self, text="Clear", command=self.parent.clear)
-
         # FILENAMELABEL
         self.filename_label = tk.Label(self, text="Filename: UNNAMED")
 
@@ -79,10 +64,6 @@ class SidebarFrame(tk.Frame):
         buttonFrame.pack(side=tk.BOTTOM, fill=tk.X)
         infoLabelFrame.pack(fill=tk.X, expand=1, anchor=tk.W)
         self.infoListBox.pack(anchor=tk.W)
-        clear_button.pack(anchor=tk.W, fill=tk.X, side=tk.TOP)
-        export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
-        export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
-        import_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
 
     def deleteButtonClicked(self):
         toDelete = self.node_listBox.curselection()
