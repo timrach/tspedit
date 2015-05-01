@@ -53,7 +53,7 @@ def constructGroupsString(nodes):
             group = []
             for n in nodes:
                 if(n.color == g):
-                    #+1 because .tsp nodes are indexed with 1
+                    # +1 because .tsp nodes are indexed with 1
                     group.append(n.id + 1)
             result.append(group)
         return str(result)

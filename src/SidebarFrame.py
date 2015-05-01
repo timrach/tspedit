@@ -31,8 +31,8 @@ class SidebarFrame(tk.Frame):
         # COLOR OPTION FRAME
         colorFrame = tk.Frame(self)
         # COLOR LIST LABEL
-        color_list_label = tk.Label(colorFrame, text="Color:").pack(
-            side=tk.LEFT, anchor=tk.W)
+        color_list_label = tk.Label(colorFrame, text="Color:")
+        color_list_label.pack(side=tk.LEFT, anchor=tk.W)
 
         # COLOR OPTIONMENU
         self.colorVar = tk.StringVar(colorFrame)
@@ -59,14 +59,14 @@ class SidebarFrame(tk.Frame):
 
         buttonFrame = tk.Frame(self.nodeListLabelFrame)
         deleteButton = tk.Button(
-            buttonFrame,text="-",command=self.deleteButtonClicked)
+            buttonFrame, text="-", command=self.deleteButtonClicked)
         deleteButton.pack(side=tk.LEFT)
 
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
         self.nodeListLabelFrame.pack(anchor=tk.W, fill=tk.X, expand=1)
         self.node_listBox.pack(anchor=tk.W)
-        buttonFrame.pack(side=tk.BOTTOM,fill=tk.X)
+        buttonFrame.pack(side=tk.BOTTOM, fill=tk.X)
         clear_button.pack(anchor=tk.W, fill=tk.X, side=tk.TOP)
         export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
@@ -77,9 +77,7 @@ class SidebarFrame(tk.Frame):
         for id in toDelete:
             for n in self.parent.nodes:
                 if n.id == id:
-                    self.parent.deleteNode(n.x,n.y)
-
-
+                    self.parent.deleteNode(n.x, n.y)
 
     def clear(self):
         self.node_listBox.delete(0, tk.END)  # delete all entries

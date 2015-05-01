@@ -61,27 +61,27 @@ class MainApplication(tk.Frame):
         self.canvas.clear()
         self.sidebar.clear()
 
-    def solveTSP(self, event):
+    def solveTSP(self, event=None):
         # first export current problem to a temporary file
         dummy = FilenameWrapper("tmpfile.tsp")
         tspio.exportTSP(
             self.nodes, self.scale,
             lambda f: tsputil.solveTSP(f, self.putSolution), dummy)
 
-    def clearPath(self):
+    def clearPath(self, event=None):
         self.canvas.clearPath()
 
     def putSolution(self, solution):
         self.canvas.putSolution(self.nodes, solution)
 
-    def exportTSP(self, event):
+    def exportTSP(self, event=None):
         tspio.exportTSP(
             self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
 
-    def exportTIKZ(self, event):
+    def exportTIKZ(self, event=None):
         tspio.exportTIKZ(self.nodes, self.scale)
 
-    def importTSP(self, event):
+    def importTSP(self, event=None):
         tspio.importTSP(self.putLoadedData)
 
     def putLoadedData(self, filename, nodes, groups):
