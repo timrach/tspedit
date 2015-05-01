@@ -98,7 +98,7 @@ class ResizingCanvas(tk.Canvas):
             (y * self.fieldsize + 2) * self.hscale,
             ((x + 1) * self.fieldsize - 2) * self.wscale,
             ((y + 1) * self.fieldsize - 2) * self.hscale,
-            fill=color)
+            fill=color, tags="node")
         self.points[index] = point
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
