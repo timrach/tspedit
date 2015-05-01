@@ -42,27 +42,28 @@ class SidebarFrame(tk.Frame):
         # switched by the switchColor method
         self.colorVar.trace("w", self.switchColor)
         self.colorOption = tk.OptionMenu(
-            *((colorFrame, self.colorVar) + tuple(colors))).pack(side=tk.RIGHT, anchor=tk.W)
+            *((colorFrame, self.colorVar) + tuple(colors)))
+        self.colorOption.pack(side=tk.RIGHT, anchor=tk.W)
 
         # NODE LIST Frame
-        self.nodeListLabelFrame = tk.LabelFrame(self, text="Coordinates (0):", padx=5,pady=10)
+        self.nodeListLabelFrame = tk.LabelFrame(
+            self, text="Coordinates (0):", padx=5, pady=10)
         # NODE LIST BOX
-        
+
         scrollbar = tk.Scrollbar(self.nodeListLabelFrame, orient=tk.VERTICAL)
-        self.node_listBox = tk.Listbox(self.nodeListLabelFrame,borderwidth=0,yscrollcommand=scrollbar.set)
+        self.node_listBox = tk.Listbox(
+            self.nodeListLabelFrame, bd=0, yscrollcommand=scrollbar.set)
         scrollbar.config(command=self.node_listBox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
-        self.nodeListLabelFrame.pack(anchor=tk.W,fill=tk.X, expand=1)
+        self.nodeListLabelFrame.pack(anchor=tk.W, fill=tk.X, expand=1)
         self.node_listBox.pack(anchor=tk.W)
-        clear_button.pack(anchor=tk.W, fill=tk.X,side=tk.TOP)
-        export_tikz_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
-        export_tsp_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
-        import_tsp_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
-        
-        
+        clear_button.pack(anchor=tk.W, fill=tk.X, side=tk.TOP)
+        export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
+        export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
+        import_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
 
     def clear(self):
         self.node_listBox.delete(0, tk.END)  # delete all entries
@@ -70,19 +71,18 @@ class SidebarFrame(tk.Frame):
     def addNode(self, new_node):
         self.node_listBox.insert(new_node.id, new_node.toString())
         self.nodeListLabelFrame.config(text="Coordinates (" +
-                                    str(self.node_listBox.size()) + "):")
+                                       str(self.node_listBox.size()) + "):")
 
     def deleteNode(self, nid):
-        self.node_listBox.delete(nid,tk.END)
-        for i in range(nid,len(self.parent.nodes)):
+        self.node_listBox.delete(nid, tk.END)
+        for i in range(nid, len(self.parent.nodes)):
             node = self.parent.nodes[i]
             self.node_listBox.insert(node.id, node.toString())
-
 
     def switchColor(self, *args):
         """ changes the colorvariable according to the selected item in the
         color listbox"""
         self.parent.selectedColor = colors.index(self.colorVar.get())
 
-    def setFilename(self,filename):
-        self.filename_label.config(text = "Filename: " + filename)
+    def setFilename(self, filename):
+        self.filename_label.config(text="Filename: " + filename)
