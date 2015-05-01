@@ -38,8 +38,12 @@ class MainApplication(tk.Frame):
         filemenu.add_command(label="Exit", command=parent.quit)
         
         tspmenu = tk.Menu(menubar, tearoff=0)
-        tspmenu.add_command(label="Solve tsp", command=self.solveTSP)
-        tspmenu.add_command(label="Clear path", command=self.canvas.clearPath)
+        tspmenu.add_command(label="Solve tsp", command=self.solveTSP,
+                            accelerator="Ctrl+P")
+        self.bind_all("<Control-p>", self.solveTSP)
+        tspmenu.add_command(label="Clear path", command=self.clearPath,
+                            accelerator="Ctrl+Shift+P")
+        self.bind_all("<Control-Shift-p>", self.clearPath)
 
         menubar.add_cascade(label="File", menu=filemenu)
         menubar.add_cascade(label="TSP", menu=tspmenu)
@@ -53,7 +57,7 @@ class MainApplication(tk.Frame):
         self.canvas.clear()
         self.sidebar.clear()
 
-    def solveTSP(self):
+    def solveTSP(self,event):
         #first export current problem to a temporary file
         dummy = FilenameWrapper("tmpfile.tsp")
         tspio.exportTSP(
