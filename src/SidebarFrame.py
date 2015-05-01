@@ -25,17 +25,19 @@ class SidebarFrame(tk.Frame):
         # CLEAR BUTTON
         clear_button = tk.Button(self, text="Clear", command=self.parent.clear)
 
+        # COLOR OPTION FRAME
+        colorFrame = tk.Frame(self)
         # COLOR LIST LABEL
-        color_list_label = tk.Label(self, text="Colors:")
+        color_list_label = tk.Label(colorFrame, text="Colors:").pack(side=tk.LEFT,anchor=tk.W)
 
-        # COLOR LISTBOX
-        self.colorVar = tk.StringVar(self)
+        # COLOR OPTIONMENU
+        self.colorVar = tk.StringVar(colorFrame)
         self.colorVar.set(colors[0]) # default value
         # register color option for the selection event
         # if a color is selected, the global color will be
         # switched by the switchColor method
         self.colorVar.trace("w", self.switchColor)
-        self.colorOption = tk.OptionMenu(*((self, self.colorVar) + tuple(colors)))
+        self.colorOption = tk.OptionMenu(*((colorFrame, self.colorVar) + tuple(colors))).pack(side=tk.RIGHT,anchor=tk.W)
         
         
 
@@ -44,8 +46,7 @@ class SidebarFrame(tk.Frame):
         # NODE LIST BOX
         self.node_listBox = tk.Listbox(self)
 
-        color_list_label.pack(anchor=tk.W)
-        self.colorOption.pack(anchor=tk.W)
+        colorFrame.pack(anchor=tk.W)
         self.node_list_label.pack(anchor=tk.W)
         self.node_listBox.pack(anchor=tk.W)
         clear_button.pack(anchor=tk.W)
