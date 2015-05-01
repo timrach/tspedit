@@ -52,6 +52,15 @@ class MainApplication(tk.Frame):
         self.canvas.clear()
         self.sidebar.clear()
 
+    def solveTSP(self):
+        #first export current problem to a temporary file
+        dummy = FilenameWrapper("tmpfile.tsp")
+        tspio.exportTSP(
+            self.nodes, self.scale, lambda f :tsputil.solveTSP(f,self.putSolution), dummy)
+
+    def putSolution(self,solution):
+        self.canvas.putSolution(self.nodes,solution)
+
     def exportTSP(self):
         tspio.exportTSP(
             self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
