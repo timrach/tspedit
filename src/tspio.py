@@ -56,6 +56,15 @@ def constructGroupsString(nodes):
             result.append(group)
         return str(result)
 
+def parseSolutionfile(file):
+    result = ""
+    f = open(file, 'r')
+    lines = f.readlines()
+    for l in range(1,len(lines)):
+        result += lines[l]
+    return result
+
+
 
 def importTSP(callback):
     # show a open-file-dialog
