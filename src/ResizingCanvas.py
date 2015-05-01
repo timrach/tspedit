@@ -40,7 +40,6 @@ class ResizingCanvas(tk.Canvas):
         self.hscale *= hscale
         self.wscale *= wscale
         self.scale("all", 0, 0, wscale, hscale)
-        # self.drawGrid()
 
     def drawGrid(self):
         """Draws the grid for the node positions on the canvas"""
