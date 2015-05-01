@@ -58,7 +58,6 @@ class SidebarFrame(tk.Frame):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
         buttonFrame = tk.Frame(self.nodeListLabelFrame)
-        addButton = tk.Button(buttonFrame,text="+").pack(side=tk.LEFT)
         deleteButton = tk.Button(
             buttonFrame,text="-",command=self.deleteButtonClicked)
         deleteButton.pack(side=tk.LEFT)
@@ -72,9 +71,6 @@ class SidebarFrame(tk.Frame):
         export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         import_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
-
-    def addButtonClicked(self):
-        pass
 
     def deleteButtonClicked(self):
         toDelete = self.node_listBox.curselection()
