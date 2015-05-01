@@ -58,7 +58,9 @@ class SidebarFrame(tk.Frame):
 
         buttonFrame = tk.Frame(self.nodeListLabelFrame)
         addButton = tk.Button(buttonFrame,text="+").pack(side=tk.LEFT)
-        deleteButton = tk.Button(buttonFrame,text="-").pack(side=tk.LEFT)
+        deleteButton = tk.Button(
+            buttonFrame,text="-",command=self.deleteButtonClicked)
+        deleteButton.pack(side=tk.LEFT)
 
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
@@ -69,6 +71,18 @@ class SidebarFrame(tk.Frame):
         export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         import_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
+
+    def addButtonClicked(self):
+        pass
+
+    def deleteButtonClicked(self):
+        toDelete = self.node_listBox.curselection()
+        for id in toDelete:
+            for n in self.parent.nodes:
+                if n.id == id:
+                    self.parent.deleteNode(n.x,n.y)
+
+
 
     def clear(self):
         self.node_listBox.delete(0, tk.END)  # delete all entries
