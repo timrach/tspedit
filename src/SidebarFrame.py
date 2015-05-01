@@ -68,7 +68,7 @@ class SidebarFrame(tk.Frame):
         scrollbar = tk.Scrollbar(infoLabelFrame, orient=tk.VERTICAL)
         self.infoListBox = tk.Listbox(
             infoLabelFrame, bd=0, yscrollcommand=scrollbar.set,
-            selectmode=tk.EXTENDED)
+            selectmode=tk.EXTENDED, width=25)
         scrollbar.config(command=self.infoListBox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
