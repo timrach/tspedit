@@ -6,8 +6,6 @@ from SidebarFrame import *
 from node import *
 import tsputil
 import tspio
-import math
-import os
 
 
 class MainApplication(tk.Frame):
@@ -30,15 +28,31 @@ class MainApplication(tk.Frame):
 
         menubar = tk.Menu(parent)
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Import .tsp", command=self.importTSP)
-        filemenu.add_command(label="Export .tsp", command=self.exportTSP)
+        filemenu.add_command(label="Import .tsp", command=self.importTSP,
+                             accelerator="Ctrl+I")
+        self.bind_all("<Control-i>", self.importTSP)
+        filemenu.add_command(label="Export .tsp", command=self.exportTSP,
+                             accelerator="Ctrl+E")
+        self.bind_all("<Control-e>", self.exportTSP)
         filemenu.add_separator()
-        filemenu.add_command(label="Export TIKZ",command=self.exportTIKZ)
+        filemenu.add_command(label="Export TIKZ", command=self.exportTIKZ,
+                             accelerator="Ctrl+T")
+        self.bind_all("<Control-t>", self.exportTIKZ)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=parent.quit)
-        
+
         tspmenu = tk.Menu(menubar, tearoff=0)
-        tspmenu.add_command(label="Solve tsp", command=self.solveTSP)
+        tspmenu.add_command(label="Solve tsp", command=self.solveTSP,
+                            accelerator="Ctrl+P")
+        self.bind_all("<Control-p>", self.solveTSP)
+        tspmenu.add_command(label="Clear path", command=self.clearPath,
+                            accelerator="Ctrl+Shift+P")
+        self.bind_all("<Control-Shift-p>", self.clearPath)
+
+        editormenu = tk.Menu(menubar, tearoff=0)
+        editormenu.add_command(label="Clear Data", command=self.clear,
+                               accelerator="Ctrl+C")
+        self.bind_all("<Control-Shift-c>", self.clear)
 
         menubar.add_cascade(label="File", menu=filemenu)
         menubar.add_cascade(label="TSP", menu=tspmenu)
@@ -46,29 +60,33 @@ class MainApplication(tk.Frame):
 
     """ CLASS METHODS """
 
-    def clear(self):
+    def clear(self, event=None):
         """ Clears all problem data from the program and resets the UI """
         self.nodes = []  # reset nodes array
         self.canvas.clear()
         self.sidebar.clear()
 
-    def solveTSP(self):
-        #first export current problem to a temporary file
+    def solveTSP(self, event=None):
+        # first export current problem to a temporary file
         dummy = FilenameWrapper("tmpfile.tsp")
         tspio.exportTSP(
-            self.nodes, self.scale, lambda f :tsputil.solveTSP(f,self.putSolution), dummy)
+            self.nodes, self.scale,
+            lambda f: tsputil.solveTSP(f, self.putSolution), dummy)
 
-    def putSolution(self,solution):
-        self.canvas.putSolution(self.nodes,solution)
+    def clearPath(self, event=None):
+        self.canvas.clearPath()
 
-    def exportTSP(self):
+    def putSolution(self, solution):
+        self.canvas.putSolution(self.nodes, solution)
+
+    def exportTSP(self, event=None):
         tspio.exportTSP(
             self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
 
-    def exportTIKZ(self):
+    def exportTIKZ(self, event=None):
         tspio.exportTIKZ(self.nodes, self.scale)
 
-    def importTSP(self):
+    def importTSP(self, event=None):
         tspio.importTSP(self.putLoadedData)
 
     def putLoadedData(self, filename, nodes, groups):
@@ -111,7 +129,7 @@ class MainApplication(tk.Frame):
 
     def deleteNode(self, xc, yc):
         """ removes a node form the data structures and the canvas.
-        As the nodes are stored as a list, the ids of the nodes after 
+        As the nodes are stored as a list, the ids of the nodes after
         the delted one have to be updated """
         self.canvas.deleteNode(xc, yc)
         # find nodeobject in nodes list

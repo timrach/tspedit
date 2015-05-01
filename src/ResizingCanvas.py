@@ -31,7 +31,6 @@ class ResizingCanvas(tk.Canvas):
         # determine the ratio of old width/height to new width/height
         wscale = float(event.width) / self.width
         hscale = float(event.height) / self.height
-        #bscale = max(wscale,hscale)
         self.width = event.width
         self.height = event.height
         # resize the canvas
@@ -47,12 +46,14 @@ class ResizingCanvas(tk.Canvas):
         for x in range(0, self.cols + 1):
             xcoord = x * self.fieldsize
             self.create_line(
-                xcoord, 0, xcoord, self.rows * self.fieldsize, fill="#ddd")
+                xcoord, 0, xcoord, self.rows * self.fieldsize,
+                fill="#ddd", tags="grid")
         # draw horizontal lines
         for y in range(0, self.rows + 1):
             ycoord = y * self.fieldsize
             self.create_line(
-                0, ycoord, self.cols * self.fieldsize, ycoord, fill="#ddd")
+                0, ycoord, self.cols * self.fieldsize, ycoord,
+                fill="#ddd", tags="grid")
         # draw 0,0 indicator
         # vertical arrow for y axis
         self.create_line(
@@ -78,7 +79,7 @@ class ResizingCanvas(tk.Canvas):
         if(q < self.cols and r < self.rows and q >= 0 and r >= 0):
             point = self.points[r * self.cols + q]
             # if there is no node already add one
-            if(point == None):
+            if point is None:
                 self.parent.parent.addNode(q, r)
             # else delete it if there is one
             else:
@@ -98,17 +99,21 @@ class ResizingCanvas(tk.Canvas):
             (y * self.fieldsize + 2) * self.hscale,
             ((x + 1) * self.fieldsize - 2) * self.wscale,
             ((y + 1) * self.fieldsize - 2) * self.hscale,
-            fill=color)
+            fill=color, tags="node")
         self.points[index] = point
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
 
-    def line(self,x1,y1,x2,y2):
-        line = self.create_line((x1*self.fieldsize + (self.fieldsize/2)) * self.wscale,
-                                (y1*self.fieldsize + (self.fieldsize/2)) * self.hscale,
-                                (x2*self.fieldsize + (self.fieldsize/2)) * self.wscale,
-                                (y2*self.fieldsize + (self.fieldsize/2)) * self.hscale,
-                                fill="black",tags="path_line")
+    def line(self, x1, y1, x2, y2):
+        line = self.create_line(
+            (x1 * self.fieldsize + (self.fieldsize / 2)) * self.wscale,
+            (y1 * self.fieldsize + (self.fieldsize / 2)) *
+            self.hscale,
+            (x2 * self.fieldsize + (self.fieldsize / 2)) *
+            self.wscale,
+            (y2 * self.fieldsize + (self.fieldsize / 2)) *
+            self.hscale,
+            fill="black", tags="path_line")
         self.move(
             line, self.padding * self.wscale, self.padding * self.hscale)
 

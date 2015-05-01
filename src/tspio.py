@@ -2,6 +2,7 @@ import re
 import ast
 import os
 from tkinter.filedialog import asksaveasfile, askopenfile
+import tsputil
 
 
 def parseTSPFile(file):
@@ -31,11 +32,12 @@ def parseTSPFile(file):
     f.close
     return (nodes, groups)
 
+
 def getGroups(nodes):
     """ return an array holding all occuring colorids of the given nodeset"""
     groups = []
     for n in nodes:
-        if not n.color in groups:
+        if n.color not in groups:
             groups.append(n.color)
     return groups
 
@@ -51,19 +53,19 @@ def constructGroupsString(nodes):
             group = []
             for n in nodes:
                 if(n.color == g):
-                    #+1 because .tsp nodes are indexed with 1
+                    # +1 because .tsp nodes are indexed with 1
                     group.append(n.id + 1)
             result.append(group)
         return str(result)
+
 
 def parseSolutionfile(file):
     result = ""
     f = open(file, 'r')
     lines = f.readlines()
-    for l in range(1,len(lines)):
+    for l in range(1, len(lines)):
         result += lines[l]
     return result
-
 
 
 def importTSP(callback):
@@ -73,16 +75,16 @@ def importTSP(callback):
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
         nodes, groups = parseTSPFile(filename.name)
-        callback(os.path.basename(filename.name),nodes, groups)
+        callback(os.path.basename(filename.name), nodes, groups)
 
 
 def exportTSP(nodes, scale, callback, preFilename=None):
     filename = preFilename
-    #check if the function was called with a filename
-    if filename == None:
+    # check if the function was called with a filename
+    if filename is None:
         filename = asksaveasfile(defaultextension=".tsp")
         print(filename)
-    #check if the user did select a file
+    # check if the user did select a file
     if filename:
         f = open(filename.name, 'w')
         f.write("NAME : " + os.path.basename(filename.name) + "\n")
@@ -127,7 +129,8 @@ def exportTIKZ(nodes, scale):
             f.write(
                 """\\addplot [color=black,mark size=5.0pt,
                         only marks,mark=*,mark options={solid,
-                        fill=""" + colors[g] + "},forget plot]\n")
+                        fill=""" + tsputil.colors[g].lower() +
+                "},forget plot]\n")
             f.write("table[row sep=crcr]{%\n")
             for n in nodes:
                 if(n.color == g):
