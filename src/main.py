@@ -49,13 +49,18 @@ class MainApplication(tk.Frame):
                             accelerator="Ctrl+Shift+P")
         self.bind_all("<Control-Shift-p>", self.clearPath)
 
+        editormenu = tk.Menu(menubar, tearoff=0)
+        editormenu.add_command(label="Clear Data", command=self.clear,
+                               accelerator="Ctrl+C")
+        self.bind_all("<Control-Shift-c>", self.clear)
+
         menubar.add_cascade(label="File", menu=filemenu)
         menubar.add_cascade(label="TSP", menu=tspmenu)
         parent.config(menu=menubar)
 
     """ CLASS METHODS """
 
-    def clear(self):
+    def clear(self, event=None):
         """ Clears all problem data from the program and resets the UI """
         self.nodes = []  # reset nodes array
         self.canvas.clear()
