@@ -20,12 +20,10 @@ class CanvasFrame(tk.Frame):
 
         # POSITION LABEL
         self.position_label = tk.Label(
-            self, text="( X:0 , Y:0 )", anchor=tk.W)
+            self, text="( X:0 , Y:0 )")
 
+        self.position_label.pack(side=tk.BOTTOM, anchor=tk.E)
         self.canvas.pack(fill=tk.BOTH, expand=True)
-        self.position_label.pack(side=tk.RIGHT)
-        # oval objects on the canvas
-        #self.points = [None for i in range(cols * rows)]
 
     def updatePositionLabel(self, q, r):
         """ update the position indicator label to show the selected
