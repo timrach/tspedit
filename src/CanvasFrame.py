@@ -48,3 +48,4 @@ class CanvasFrame(tk.Frame):
             start = nodes[int(solution[c])]
             end = nodes[int(solution[c+1])]
             self.canvas.line(start.x,start.y,end.x,end.y)
+        self.canvas.tag_raise("node")
