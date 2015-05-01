@@ -4,10 +4,8 @@ import tkinter as tk
 from CanvasFrame import *
 from SidebarFrame import *
 from node import *
-import tspio
-
 from tsputil import *
-from tkinter.filedialog import asksaveasfile, askopenfile
+import tspio
 import math
 
 
