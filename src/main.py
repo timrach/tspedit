@@ -23,6 +23,7 @@ class MainApplication(tk.Frame):
 
 
         """ GUI """
+        self.configure(padx=10, pady=10)
         self.canvas = CanvasFrame(self, relief=tk.SUNKEN)
         self.sidebar = SidebarFrame(self,relief=tk.SUNKEN)
 
