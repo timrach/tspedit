@@ -28,18 +28,18 @@ class SidebarFrame(tk.Frame):
         # COLOR OPTION FRAME
         colorFrame = tk.Frame(self)
         # COLOR LIST LABEL
-        color_list_label = tk.Label(colorFrame, text="Colors:").pack(side=tk.LEFT,anchor=tk.W)
+        color_list_label = tk.Label(colorFrame, text="Colors:").pack(
+            side=tk.LEFT, anchor=tk.W)
 
         # COLOR OPTIONMENU
         self.colorVar = tk.StringVar(colorFrame)
-        self.colorVar.set(colors[0]) # default value
+        self.colorVar.set(colors[0])  # default value
         # register color option for the selection event
         # if a color is selected, the global color will be
         # switched by the switchColor method
         self.colorVar.trace("w", self.switchColor)
-        self.colorOption = tk.OptionMenu(*((colorFrame, self.colorVar) + tuple(colors))).pack(side=tk.RIGHT,anchor=tk.W)
-        
-        
+        self.colorOption = tk.OptionMenu(
+            *((colorFrame, self.colorVar) + tuple(colors))).pack(side=tk.RIGHT, anchor=tk.W)
 
         # NODE LIST LABEL
         self.node_list_label = tk.Label(self, text="Coordinates (0):")
