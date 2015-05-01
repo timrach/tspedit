@@ -13,10 +13,8 @@ class ResizingCanvas(tk.Canvas):
         self.hscale = 1.0
         self.wscale = 1.0
         self.fieldsize = 30
-        self.linewidth = 3
         self.rows = math.floor(self.height / self.fieldsize)
         self.cols = math.floor(self.width / self.fieldsize)
-        self.linewidth2 = self.linewidth * 2
         self.points = [None for i in range(0, self.rows * self.cols)]
 
         # register the canvas area for click and hover events.
