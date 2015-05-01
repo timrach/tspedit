@@ -4,9 +4,10 @@ import tkinter as tk
 from CanvasFrame import *
 from SidebarFrame import *
 from node import *
-from tsputil import *
+import tsputil
 import tspio
 import math
+import os
 
 
 class MainApplication(tk.Frame):
