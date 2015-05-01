@@ -103,6 +103,15 @@ class ResizingCanvas(tk.Canvas):
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
 
+    def line(self,x1,y1,x2,y2):
+        line = self.create_line((x1*self.fieldsize + (self.fieldsize/2)) * self.wscale,
+                                (y1*self.fieldsize + (self.fieldsize/2)) * self.hscale,
+                                (x2*self.fieldsize + (self.fieldsize/2)) * self.wscale,
+                                (y2*self.fieldsize + (self.fieldsize/2)) * self.hscale,
+                                fill="black",tags="path_line, all")
+        self.move(
+            line, self.padding * self.wscale, self.padding * self.hscale)
+
     def deleteNode(self, x, y):
         self.delete(self.points[y * self.cols + x])
         self.points[y * self.cols + x] = None
