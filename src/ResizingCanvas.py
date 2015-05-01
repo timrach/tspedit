@@ -93,12 +93,14 @@ class ResizingCanvas(tk.Canvas):
         """ draws a point on the specified position on the canvas and adds
         the data to the nodes and points arrays and the nodes listbox"""
         index = y * self.cols + x
-        self.points[index] = self.create_oval(
+        point = self.create_oval(
             (x * self.fieldsize + 2) * self.wscale,
             (y * self.fieldsize + 2) * self.hscale,
             ((x + 1) * self.fieldsize - 2) * self.wscale,
             ((y + 1) * self.fieldsize - 2) * self.hscale,
             fill=color)
+        self.points[index] = point
+        self.move(point,self.padding*self.wscale,self.padding*self.hscale)
 
     def deleteNode(self, x, y):
         self.delete(self.points[y * self.cols + x])
