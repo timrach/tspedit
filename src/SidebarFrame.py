@@ -110,7 +110,7 @@ class SidebarFrame(tk.Frame):
     def switchColor(self, *args):
         """ changes the colorvariable according to the selected item in the
         color listbox"""
-        self.parent.selectedColor = colors.index(self.colorVar.get())
+        self.parent.selectedColor = tsputil.colors.index(self.colorVar.get())
 
     def setFilename(self, filename):
         self.filename_label.config(text="Filename: " + filename)
