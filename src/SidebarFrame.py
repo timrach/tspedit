@@ -44,14 +44,14 @@ class SidebarFrame(tk.Frame):
         self.colorOption = tk.OptionMenu(
             *((colorFrame, self.colorVar) + tuple(colors))).pack(side=tk.RIGHT, anchor=tk.W)
 
-        # NODE LIST LABEL
-        self.node_list_label = tk.Label(self, text="Coordinates (0):")
+        # NODE LIST Frame
+        self.nodeListLabelFrame = tk.LabelFrame(self, text="Coordinates (0):", padx=5,pady=10)
         # NODE LIST BOX
-        self.node_listBox = tk.Listbox(self)
+        self.node_listBox = tk.Listbox(self.nodeListLabelFrame,borderwidth=0)
 
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
-        self.node_list_label.pack(anchor=tk.W)
+        self.nodeListLabelFrame.pack(anchor=tk.W,fill=tk.X, expand=1)
         self.node_listBox.pack(anchor=tk.W)
         clear_button.pack(anchor=tk.W, fill=tk.X,side=tk.TOP)
         export_tikz_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
@@ -65,7 +65,7 @@ class SidebarFrame(tk.Frame):
 
     def addNode(self, new_node):
         self.node_listBox.insert(new_node.id, new_node.toString())
-        self.node_list_label.config(text="Coordinates (" +
+        self.nodeListLabelFrame.config(text="Coordinates (" +
                                     str(self.node_listBox.size()) + "):")
 
     def deleteNode(self, nid):
