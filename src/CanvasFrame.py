@@ -40,6 +40,9 @@ class CanvasFrame(tk.Frame):
     def clear(self):
         self.canvas.clear()
 
+    def getNodes(self):
+        return self.parent.getNodes()
+
     def putSolution(self, nodes, solution):
         self.canvas.delete("path_line")
         solution.append(solution[0])

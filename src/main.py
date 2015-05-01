@@ -148,6 +148,9 @@ class MainApplication(tk.Frame):
         self.nodes.remove(target)
         self.sidebar.deleteNode(target.id)
 
+    def getNodes(self):
+        return self.nodes
+
 
 if __name__ == '__main__':
     root = tk.Tk()
