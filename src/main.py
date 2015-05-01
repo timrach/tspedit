@@ -36,7 +36,11 @@ class MainApplication(tk.Frame):
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=parent.quit)
         
+        tspmenu = tk.Menu(menubar, tearoff=0)
+        tspmenu.add_command(label="Solve tsp")
+
         menubar.add_cascade(label="File", menu=filemenu)
+        menubar.add_cascade(label="TSP", menu=tspmenu)
         parent.config(menu=menubar)
 
     """ CLASS METHODS """
