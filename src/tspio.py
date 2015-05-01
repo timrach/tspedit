@@ -33,6 +33,16 @@ def parseTSPFile(file):
     return (nodes, groups)
 
 
+def importTSP(callback):
+    # show a open-file-dialog
+    filename = askopenfile()
+    # if the user selected a file, delete old data,parse the file and
+    # load the new data. If the user canceled the selection, do nothing.
+    if filename:
+        nodes, groups = parseTSPFile(filename.name)
+        callback(nodes, groups)
+
+
 def exportTSP(nodes, scale):
     filename = asksaveasfile(defaultextension=".tsp")
     if filename:
