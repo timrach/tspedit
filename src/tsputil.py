@@ -1,6 +1,7 @@
 import subprocess
 import os
 import tspio
+import math
 
 colors = ["Black", "Red", "Green", "Blue", "Orange", "Cyan",
           "Magenta", "Yellow", "Gray", "White", "Brown",
@@ -22,6 +23,17 @@ def solveTSP(filename, callback):
             if os.path.isfile(fileToDelete):
                 os.remove(fileToDelete)
     callback(solution.split())
+
+
+def getPathLength(nodes, scale, path):
+    result = 0
+    path.append(path[0])
+    for p in range(0, len(path) - 1):
+        start = nodes[int(path[p])]
+        end = nodes[int(path[p]) + 1]
+        result += math.sqrt(math.pow((start.x - end.x) * scale, 2) +
+                            math.pow((start.y - end.y) * scale, 2))
+    return result
 
 
 class FilenameWrapper:
