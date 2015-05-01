@@ -54,13 +54,13 @@ class ResizingCanvas(tk.Canvas):
             self.create_line(
                 0, ycoord, self.cols * self.fieldsize, ycoord, fill="#ddd")
         # draw 0,0 indicator
-        #vertical arrow for y axis
+        # vertical arrow for y axis
         self.create_line(
-            0, 0, 0, self.fieldsize*2, arrow=tk.LAST,fill="green")
-        #horizontal arrow for x axis
+            0, 0, 0, self.fieldsize * 2, arrow=tk.LAST, fill="green")
+        # horizontal arrow for x axis
         self.create_line(
-            0,0,self.fieldsize*2,0, arrow=tk.LAST,fill="red")
-        self.move("all",5,5)
+            0, 0, self.fieldsize * 2, 0, arrow=tk.LAST, fill="red")
+        self.move("all", 5, 5)
 
     def onMotion(self, event):
         # get relative field coordinates
@@ -100,7 +100,8 @@ class ResizingCanvas(tk.Canvas):
             ((y + 1) * self.fieldsize - 2) * self.hscale,
             fill=color)
         self.points[index] = point
-        self.move(point,self.padding*self.wscale,self.padding*self.hscale)
+        self.move(
+            point, self.padding * self.wscale, self.padding * self.hscale)
 
     def deleteNode(self, x, y):
         self.delete(self.points[y * self.cols + x])
