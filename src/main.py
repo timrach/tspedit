@@ -79,6 +79,7 @@ class MainApplication(tk.Frame):
 
     def putSolution(self, solution):
         self.canvas.putSolution(self.nodes, solution)
+        self.sidebar.addPathInfo(self.nodes, solution)
 
     def exportTSP(self, event=None):
         tspio.exportTSP(
