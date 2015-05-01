@@ -30,7 +30,7 @@ def getPathLength(nodes, scale, path):
     path.append(path[0])
     for p in range(0, len(path) - 1):
         start = nodes[int(path[p])]
-        end = nodes[int(path[p]) + 1]
+        end = nodes[int(path[p + 1])]
         result += math.sqrt(math.pow((start.x - end.x) * scale, 2) +
                             math.pow((start.y - end.y) * scale, 2))
     return result
