@@ -8,7 +8,7 @@ colors = ["Black", "Red", "Green", "Blue", "Orange", "Cyan",
 
 
 def solveTSP(filename, callback):
-    out = subprocess.check_output(["./concorde", filename])
+    subprocess.call(["./concorde", filename])
     # print(out.decode("utf-8"))
     # open solutionfile and parse solution string
     basename = os.path.splitext(filename)[0]
