@@ -4,11 +4,10 @@ import tkinter as tk
 from CanvasFrame import *
 from SidebarFrame import *
 from node import *
+import tsputil
 import tspio
-
-from tsputil import *
-from tkinter.filedialog import asksaveasfile, askopenfile
 import math
+import os
 
 
 class MainApplication(tk.Frame):
@@ -29,6 +28,22 @@ class MainApplication(tk.Frame):
         self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+        menubar = tk.Menu(parent)
+        filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="Import .tsp", command=self.importTSP)
+        filemenu.add_command(label="Export .tsp", command=self.exportTSP)
+        filemenu.add_separator()
+        filemenu.add_command(label="Export TIKZ",command=self.exportTIKZ)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=parent.quit)
+        
+        tspmenu = tk.Menu(menubar, tearoff=0)
+        tspmenu.add_command(label="Solve tsp", command=self.solveTSP)
+
+        menubar.add_cascade(label="File", menu=filemenu)
+        menubar.add_cascade(label="TSP", menu=tspmenu)
+        parent.config(menu=menubar)
+
     """ CLASS METHODS """
 
     def clear(self):
@@ -37,8 +52,18 @@ class MainApplication(tk.Frame):
         self.canvas.clear()
         self.sidebar.clear()
 
+    def solveTSP(self):
+        #first export current problem to a temporary file
+        dummy = FilenameWrapper("tmpfile.tsp")
+        tspio.exportTSP(
+            self.nodes, self.scale, lambda f :tsputil.solveTSP(f,self.putSolution), dummy)
+
+    def putSolution(self,solution):
+        self.canvas.putSolution(self.nodes,solution)
+
     def exportTSP(self):
-        tspio.exportTSP(self.nodes, self.scale)
+        tspio.exportTSP(
+            self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
 
     def exportTIKZ(self):
         tspio.exportTIKZ(self.nodes, self.scale)
@@ -46,10 +71,11 @@ class MainApplication(tk.Frame):
     def importTSP(self):
         tspio.importTSP(self.putLoadedData)
 
-    def putLoadedData(self, nodes, groups):
+    def putLoadedData(self, filename, nodes, groups):
         """ Fills the internal data structures with the loaded data.
             !!! No error handling or validity checks !!!"""
         self.clear()
+        self.sidebar.setFilename(filename)
         # If the nodes are not grouped, draw them in the currently
         # selected color
         if groups == []:
@@ -95,12 +121,12 @@ class MainApplication(tk.Frame):
             if not found:
                 if n.x == xc and n.y == yc:
                     target = n
-                    self.sidebar.deleteNode(n.id)
                     found = True
             else:
                 # update id
                 n.id = n.id - 1
         self.nodes.remove(target)
+        self.sidebar.deleteNode(target.id)
 
 
 if __name__ == '__main__':

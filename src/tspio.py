@@ -2,7 +2,6 @@ import re
 import ast
 import os
 from tkinter.filedialog import asksaveasfile, askopenfile
-from tsputil import *
 
 
 def parseTSPFile(file):
@@ -32,6 +31,40 @@ def parseTSPFile(file):
     f.close
     return (nodes, groups)
 
+def getGroups(nodes):
+    """ return an array holding all occuring colorids of the given nodeset"""
+    groups = []
+    for n in nodes:
+        if not n.color in groups:
+            groups.append(n.color)
+    return groups
+
+
+def constructGroupsString(nodes):
+    """ """
+    groups = getGroups(nodes)
+    if (len(groups) <= 1):
+        return ""
+    else:
+        result = []
+        for g in groups:
+            group = []
+            for n in nodes:
+                if(n.color == g):
+                    #+1 because .tsp nodes are indexed with 1
+                    group.append(n.id + 1)
+            result.append(group)
+        return str(result)
+
+def parseSolutionfile(file):
+    result = ""
+    f = open(file, 'r')
+    lines = f.readlines()
+    for l in range(1,len(lines)):
+        result += lines[l]
+    return result
+
+
 
 def importTSP(callback):
     # show a open-file-dialog
@@ -40,11 +73,16 @@ def importTSP(callback):
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
         nodes, groups = parseTSPFile(filename.name)
-        callback(nodes, groups)
+        callback(os.path.basename(filename.name),nodes, groups)
 
 
-def exportTSP(nodes, scale):
-    filename = asksaveasfile(defaultextension=".tsp")
+def exportTSP(nodes, scale, callback, preFilename=None):
+    filename = preFilename
+    #check if the function was called with a filename
+    if filename == None:
+        filename = asksaveasfile(defaultextension=".tsp")
+        print(filename)
+    #check if the user did select a file
     if filename:
         f = open(filename.name, 'w')
         f.write("NAME : " + os.path.basename(filename.name) + "\n")
@@ -64,6 +102,7 @@ def exportTSP(nodes, scale):
                     " " + str(n.y * scale) + "\n")
         f.write("EOF")
         f.close()
+        callback(os.path.basename(filename.name))
 
 
 def exportTIKZ(nodes, scale):

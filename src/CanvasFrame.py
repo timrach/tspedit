@@ -40,3 +40,11 @@ class CanvasFrame(tk.Frame):
 
     def clear(self):
         self.canvas.clear()
+
+    def putSolution(self,nodes,solution):
+        self.canvas.delete("path_line")
+        solution.append(solution[0])
+        for c in range(0,len(solution)-1):
+            start = nodes[int(solution[c])]
+            end = nodes[int(solution[c+1])]
+            self.canvas.line(start.x,start.y,end.x,end.y)
