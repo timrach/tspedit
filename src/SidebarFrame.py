@@ -25,6 +25,9 @@ class SidebarFrame(tk.Frame):
         # CLEAR BUTTON
         clear_button = tk.Button(self, text="Clear", command=self.parent.clear)
 
+        # FILENAMELABEL
+        self.filename_label = tk.Label(self, text="Filename: UNNAMED")
+
         # COLOR OPTION FRAME
         colorFrame = tk.Frame(self)
         # COLOR LIST LABEL
@@ -46,6 +49,7 @@ class SidebarFrame(tk.Frame):
         # NODE LIST BOX
         self.node_listBox = tk.Listbox(self)
 
+        self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
         self.node_list_label.pack(anchor=tk.W)
         self.node_listBox.pack(anchor=tk.W)
@@ -71,3 +75,6 @@ class SidebarFrame(tk.Frame):
         """ changes the colorvariable according to the selected item in the
         color listbox"""
         self.parent.selectedColor = colors.index(self.colorVar.get())
+
+    def setFilename(self,filename):
+        self.filename_label.config(text = "Filename: " + filename)

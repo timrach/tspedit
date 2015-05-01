@@ -36,7 +36,8 @@ class MainApplication(tk.Frame):
         self.sidebar.clear()
 
     def exportTSP(self):
-        tspio.exportTSP(self.nodes, self.scale)
+        tspio.exportTSP(
+            self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
 
     def exportTIKZ(self):
         tspio.exportTIKZ(self.nodes, self.scale)
@@ -44,10 +45,11 @@ class MainApplication(tk.Frame):
     def importTSP(self):
         tspio.importTSP(self.putLoadedData)
 
-    def putLoadedData(self, nodes, groups):
+    def putLoadedData(self, filename, nodes, groups):
         """ Fills the internal data structures with the loaded data.
             !!! No error handling or validity checks !!!"""
         self.clear()
+        self.sidebar.setFilename(filename)
         # If the nodes are not grouped, draw them in the currently
         # selected color
         if groups == []:
