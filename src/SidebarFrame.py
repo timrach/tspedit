@@ -28,7 +28,7 @@ class SidebarFrame(tk.Frame):
         # COLOR OPTION FRAME
         colorFrame = tk.Frame(self)
         # COLOR LIST LABEL
-        color_list_label = tk.Label(colorFrame, text="Colors:").pack(
+        color_list_label = tk.Label(colorFrame, text="Color:").pack(
             side=tk.LEFT, anchor=tk.W)
 
         # COLOR OPTIONMENU
