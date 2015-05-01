@@ -49,3 +49,6 @@ class CanvasFrame(tk.Frame):
             end = nodes[int(solution[c+1])]
             self.canvas.line(start.x,start.y,end.x,end.y)
         self.canvas.tag_raise("node")
+    
+    def clearPath(self):
+        self.canvas.delete("path_line")
