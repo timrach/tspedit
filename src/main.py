@@ -39,6 +39,7 @@ class MainApplication(tk.Frame):
         
         tspmenu = tk.Menu(menubar, tearoff=0)
         tspmenu.add_command(label="Solve tsp", command=self.solveTSP)
+        tspmenu.add_command(label="Clear path", command=self.canvas.clearPath)
 
         menubar.add_cascade(label="File", menu=filemenu)
         menubar.add_cascade(label="TSP", menu=tspmenu)
