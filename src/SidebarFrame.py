@@ -73,7 +73,11 @@ class SidebarFrame(tk.Frame):
                                     str(self.node_listBox.size()) + "):")
 
     def deleteNode(self, nid):
-        self.node_listBox.delete(nid)
+        self.node_listBox.delete(nid,tk.END)
+        for i in range(nid,len(self.parent.nodes)):
+            node = self.parent.nodes[i]
+            self.node_listBox.insert(node.id, node.toString())
+
 
     def switchColor(self, *args):
         """ changes the colorvariable according to the selected item in the

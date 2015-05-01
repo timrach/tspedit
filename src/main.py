@@ -95,12 +95,12 @@ class MainApplication(tk.Frame):
             if not found:
                 if n.x == xc and n.y == yc:
                     target = n
-                    self.sidebar.deleteNode(n.id)
                     found = True
             else:
                 # update id
                 n.id = n.id - 1
         self.nodes.remove(target)
+        self.sidebar.deleteNode(target.id)
 
 
 if __name__ == '__main__':
