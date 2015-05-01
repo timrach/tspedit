@@ -14,4 +14,4 @@ class Node:
         if(self.y < 10):
             ydelim = "  "
 
-        return "X:" + xdelim + str(self.x) + " , Y:" + ydelim + str(self.y)
+        return " X:" + xdelim + str(self.x) + " \t\t Y:" + ydelim + str(self.y)
