@@ -25,7 +25,6 @@ class ResizingCanvas(tk.Canvas):
         self.bind("<Button-1>", self.canvas_clicked)
         self.bind("<Motion>", self.onMotion)
         self.bind("<Configure>", self.on_resize)
-
         self.drawGrid()
 
     def on_resize(self, event):
