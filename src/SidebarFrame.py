@@ -49,10 +49,12 @@ class SidebarFrame(tk.Frame):
         colorFrame.pack(anchor=tk.W)
         self.node_list_label.pack(anchor=tk.W)
         self.node_listBox.pack(anchor=tk.W)
-        clear_button.pack(anchor=tk.W)
-        import_tsp_button.pack(anchor=tk.W)
-        export_tsp_button.pack(anchor=tk.W)
-        export_tikz_button.pack(anchor=tk.W)
+        clear_button.pack(anchor=tk.W, fill=tk.X,side=tk.TOP)
+        export_tikz_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
+        export_tsp_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
+        import_tsp_button.pack(anchor=tk.W, fill=tk.X,side=tk.BOTTOM)
+        
+        
 
     def clear(self):
         self.node_listBox.delete(0, tk.END)  # delete all entries
