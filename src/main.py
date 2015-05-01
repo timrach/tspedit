@@ -52,7 +52,7 @@ class MainApplication(tk.Frame):
         editormenu = tk.Menu(menubar, tearoff=0)
         editormenu.add_command(label="Clear Data", command=self.clear,
                                accelerator="Ctrl+C")
-        self.bind_all("<Control-Shift-c>", self.clear)
+        self.bind_all("<Control-c>", self.clear)
 
         menubar.add_cascade(label="File", menu=filemenu)
         menubar.add_cascade(label="TSP", menu=tspmenu)
