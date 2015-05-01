@@ -21,10 +21,10 @@ class CanvasFrame(tk.Frame):
 
 		# POSITION LABEL
 		self.position_label = tk.Label(
-			self, text="Position:( X:0 , Y:0 )", anchor=tk.W)
+			self, text="( X:0 , Y:0 )", anchor=tk.W)
 
 		self.canvas.pack(fill=tk.BOTH,expand=True)
-		self.position_label.pack()
+		self.position_label.pack(side=tk.RIGHT)
 		# oval objects on the canvas
 		#self.points = [None for i in range(cols * rows)]
 
@@ -34,7 +34,7 @@ class CanvasFrame(tk.Frame):
 		field on the canvas"""
 		# update label
 		self.position_label.config(
-			text=("Position:( X:" + str(q) + " , " + "Y:" + str(r)) + ")")
+			text=("( X:" + str(q) + " , " + "Y:" + str(r)) + ")")
 
 	
 	def addNode(self,x,y,color):
