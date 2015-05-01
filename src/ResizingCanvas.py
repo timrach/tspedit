@@ -13,6 +13,7 @@ class ResizingCanvas(tk.Canvas):
         self.hscale = 1.0
         self.wscale = 1.0
         self.fieldsize = 30
+        self.padding = 5
         self.rows = math.floor(self.height / self.fieldsize)
         self.cols = math.floor(self.width / self.fieldsize)
         self.points = [None for i in range(0, self.rows * self.cols)]
@@ -54,6 +55,14 @@ class ResizingCanvas(tk.Canvas):
             ycoord = y * self.fieldsize
             self.create_line(
                 0, ycoord, self.cols * self.fieldsize, ycoord, fill="#ddd")
+        # draw 0,0 indicator
+        #vertical arrow for y axis
+        self.create_line(
+            0, 0, 0, self.fieldsize*2, arrow=tk.LAST,fill="green")
+        #horizontal arrow for x axis
+        self.create_line(
+            0,0,self.fieldsize*2,0, arrow=tk.LAST,fill="red")
+        self.move("all",5,5)
 
     def onMotion(self, event):
         # get relative field coordinates
