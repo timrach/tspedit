@@ -52,7 +52,8 @@ class SidebarFrame(tk.Frame):
 
         scrollbar = tk.Scrollbar(self.nodeListLabelFrame, orient=tk.VERTICAL)
         self.node_listBox = tk.Listbox(
-            self.nodeListLabelFrame, bd=0, yscrollcommand=scrollbar.set)
+            self.nodeListLabelFrame, bd=0, yscrollcommand=scrollbar.set,
+            selectmode=tk.EXTENDED)
         scrollbar.config(command=self.node_listBox.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
