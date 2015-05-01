@@ -62,11 +62,23 @@ class SidebarFrame(tk.Frame):
             buttonFrame, text="-", command=self.deleteButtonClicked)
         deleteButton.pack(side=tk.LEFT)
 
+        infoLabelFrame = tk.LabelFrame(
+            self, text="Info", padx=5, pady=5)
+
+        scrollbar = tk.Scrollbar(infoLabelFrame, orient=tk.VERTICAL)
+        self.infoListBox = tk.Listbox(
+            infoLabelFrame, bd=0, yscrollcommand=scrollbar.set,
+            selectmode=tk.EXTENDED)
+        scrollbar.config(command=self.infoListBox.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
         self.filename_label.pack(anchor=tk.W)
         colorFrame.pack(anchor=tk.W)
         self.nodeListLabelFrame.pack(anchor=tk.W, fill=tk.X, expand=1)
         self.node_listBox.pack(anchor=tk.W)
         buttonFrame.pack(side=tk.BOTTOM, fill=tk.X)
+        infoLabelFrame.pack(fill=tk.X, expand=1, anchor=tk.W)
+        self.infoListBox.pack(anchor=tk.W)
         clear_button.pack(anchor=tk.W, fill=tk.X, side=tk.TOP)
         export_tikz_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
         export_tsp_button.pack(anchor=tk.W, fill=tk.X, side=tk.BOTTOM)
