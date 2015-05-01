@@ -30,10 +30,16 @@ class MainApplication(tk.Frame):
 
         menubar = tk.Menu(parent)
         filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_command(label="Import .tsp", command=self.importTSP)
-        filemenu.add_command(label="Export .tsp", command=self.exportTSP)
+        filemenu.add_command(label="Import .tsp", command=self.importTSP,
+                             accelerator="Ctrl+I")
+        self.bind_all("<Control-i>", self.importTSP)
+        filemenu.add_command(label="Export .tsp", command=self.exportTSP,
+                             accelerator="Ctrl+E")
+        self.bind_all("<Control-e>", self.exportTSP)
         filemenu.add_separator()
-        filemenu.add_command(label="Export TIKZ",command=self.exportTIKZ)
+        filemenu.add_command(label="Export TIKZ",command=self.exportTIKZ,
+                             accelerator="Ctrl+T")
+        self.bind_all("<Control-t>", self.exportTIKZ)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=parent.quit)
         
@@ -69,14 +75,14 @@ class MainApplication(tk.Frame):
     def putSolution(self,solution):
         self.canvas.putSolution(self.nodes,solution)
 
-    def exportTSP(self):
+    def exportTSP(self, event):
         tspio.exportTSP(
             self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
 
-    def exportTIKZ(self):
+    def exportTIKZ(self, event):
         tspio.exportTIKZ(self.nodes, self.scale)
 
-    def importTSP(self):
+    def importTSP(self, event):
         tspio.importTSP(self.putLoadedData)
 
     def putLoadedData(self, filename, nodes, groups):
