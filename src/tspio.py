@@ -43,7 +43,7 @@ def importTSP(callback):
         callback(os.path.basename(filename.name),nodes, groups)
 
 
-def exportTSP(nodes, scale):
+def exportTSP(nodes, scale, callback):
     filename = asksaveasfile(defaultextension=".tsp")
     if filename:
         f = open(filename.name, 'w')
@@ -64,6 +64,7 @@ def exportTSP(nodes, scale):
                     " " + str(n.y * scale) + "\n")
         f.write("EOF")
         f.close()
+        callback(os.path.basename(filename.name))
 
 
 def exportTIKZ(nodes, scale):
