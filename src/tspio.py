@@ -32,6 +32,7 @@ def parseTSPFile(file):
     f.close
     return (nodes, groups)
 
+
 def importTSP(callback):
     # show a open-file-dialog
     filename = askopenfile()
@@ -40,6 +41,7 @@ def importTSP(callback):
     if filename:
         nodes, groups = parseTSPFile(filename.name)
         callback(nodes, groups)
+
 
 def exportTSP(nodes, scale):
     filename = asksaveasfile(defaultextension=".tsp")

@@ -57,8 +57,8 @@ class SidebarFrame(tk.Frame):
 
     def addNode(self, new_node):
         self.node_listBox.insert(new_node.id, new_node.toString())
-        self.node_list_label.config(text="Coordinates (" + \
-            str(self.node_listBox.size()) + "):")
+        self.node_list_label.config(text="Coordinates (" +
+                                    str(self.node_listBox.size()) + "):")
 
     def deleteNode(self, nid):
         self.node_listBox.delete(nid)

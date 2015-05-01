@@ -21,15 +21,13 @@ class MainApplication(tk.Frame):
         self.selectedColor = 0  # active colorid
         self.nodes = []  # internal node representation
 
-
         """ GUI """
         self.configure(padx=10, pady=10)
         self.canvas = CanvasFrame(self, relief=tk.SUNKEN)
-        self.sidebar = SidebarFrame(self,relief=tk.SUNKEN)
+        self.sidebar = SidebarFrame(self, relief=tk.SUNKEN)
 
-        self.sidebar.pack(side=tk.LEFT,fill=tk.BOTH, expand=True)
-        self.canvas.pack(side=tk.LEFT,fill=tk.BOTH, expand=True)
-
+        self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     """ CLASS METHODS """
 
@@ -39,16 +37,14 @@ class MainApplication(tk.Frame):
         self.canvas.clear()
         self.sidebar.clear()
 
-
     def exportTSP(self):
-        tspio.exportTSP(self.nodes,self.scale)
+        tspio.exportTSP(self.nodes, self.scale)
 
     def exportTIKZ(self):
-        tspio.exportTIKZ(self.nodes,self.scale)
+        tspio.exportTIKZ(self.nodes, self.scale)
 
     def importTSP(self):
         tspio.importTSP(self.putLoadedData)
-        
 
     def putLoadedData(self, nodes, groups):
         """ Fills the internal data structures with the loaded data.
@@ -78,22 +74,20 @@ class MainApplication(tk.Frame):
                     self.addNode(
                         int(node[0] / self.scale), int(node[1] / self.scale))
             self.selectedColor = color_old
-    
 
     def addNode(self, xc, yc):
-        #pass data to frames
-        self.canvas.addNode(xc,yc, colors[self.selectedColor])
-        #update data
+        # pass data to frames
+        self.canvas.addNode(xc, yc, colors[self.selectedColor])
+        # update data
         new_node = Node(len(self.nodes), xc, yc, self.selectedColor)
         self.nodes.append(new_node)
         self.sidebar.addNode(new_node)
-        
 
     def deleteNode(self, xc, yc):
         """ removes a node form the data structures and the canvas.
         As the nodes are stored as a list, the ids of the nodes after 
         the delted one have to be updated """
-        self.canvas.deleteNode(xc,yc)
+        self.canvas.deleteNode(xc, yc)
         # find nodeobject in nodes list
         found = False
         target = None
