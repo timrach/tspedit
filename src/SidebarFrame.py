@@ -75,6 +75,7 @@ class SidebarFrame(tk.Frame):
 
     def clear(self):
         self.node_listBox.delete(0, tk.END)  # delete all entries
+        self.removePathInfo()
 
     def addNode(self, new_node):
         self.node_listBox.insert(new_node.id, new_node.toString())
