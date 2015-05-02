@@ -96,12 +96,17 @@ class ResizingCanvas(tk.Canvas):
         """ draws a point on the specified position on the canvas and adds
         the data to the nodes and points arrays and the nodes listbox"""
         index = y * self.cols + x
-        point = self.circle(x, y, 0.5, fill=color, tags="node")
+        point = self.circle(x, y, 0.5, fill=color, tags="node",
+                            activeoutline="Orange", activewidth=3)
+        self.tag_bind(point, "<Button-1>", lambda e: self.nodeSelected(index))
         self.points[index] = point
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
         self.drawCenterOfMass()
         self.drawGeometricalCenter()
+
+    def nodeSelected(self, index):
+        print(index)
 
     def drawCenterOfMass(self):
         self.delete("com")
