@@ -17,14 +17,28 @@ class CanvasFrame(tk.Frame):
         self.canvas = ResizingCanvas(
             self, width=self.width, height=self.height, relief=tk.SUNKEN)
 
-        #BOTTOM BAR FRAME
+        # BOTTOM BAR FRAME
         bottomBarFrame = tk.Frame(self)
         # POSITION LABEL
         self.position_label = tk.Label(
             bottomBarFrame, text="( X:0 , Y:0 )")
 
+        # CENTER OF MASS SETTING
+        enableComDrawing = tk.IntVar()
+        self.comCheckButton = tk.Checkbutton(
+            bottomBarFrame, text="Draw center of mass ",
+            variable=enableComDrawing)
+
+        # CENTER OF GEOMETRY SETTING
+        enableCogDrawing = tk.IntVar()
+        self.cogCheckButton = tk.Checkbutton(
+            bottomBarFrame, text="Draw geometrical center",
+            variable=enableCogDrawing)
+
         bottomBarFrame.pack(side=tk.BOTTOM, anchor=tk.E)
         self.position_label.pack(side=tk.RIGHT)
+        self.comCheckButton.pack(side=tk.LEFT)
+        self.cogCheckButton.pack(side=tk.LEFT)
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
     def updatePositionLabel(self, q, r):
