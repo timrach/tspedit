@@ -17,11 +17,14 @@ class CanvasFrame(tk.Frame):
         self.canvas = ResizingCanvas(
             self, width=self.width, height=self.height, relief=tk.SUNKEN)
 
+        #BOTTOM BAR FRAME
+        bottomBarFrame = tk.Frame(self)
         # POSITION LABEL
         self.position_label = tk.Label(
-            self, text="( X:0 , Y:0 )")
+            bottomBarFrame, text="( X:0 , Y:0 )")
 
-        self.position_label.pack(side=tk.BOTTOM, anchor=tk.E)
+        bottomBarFrame.pack(side=tk.BOTTOM, anchor=tk.E)
+        self.position_label.pack(side=tk.RIGHT)
         self.canvas.pack(fill=tk.BOTH, expand=True)
 
     def updatePositionLabel(self, q, r):
