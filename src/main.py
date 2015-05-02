@@ -79,6 +79,7 @@ class MainApplication(tk.Frame):
         self.canvas.clearPath()
 
     def putSolution(self, solution):
+        solution.append(solution[0])  # append startnode to make tour circular
         self.canvas.putSolution(self.nodes, solution)
         self.sidebar.addPathInfo(self.nodes, solution)
 

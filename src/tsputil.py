@@ -27,7 +27,6 @@ def solveTSP(filename, callback):
 
 def getPathLength(nodes, scale, path):
     result = 0
-    path.append(path[0])
     for p in range(0, len(path) - 1):
         start = nodes[int(path[p])]
         end = nodes[int(path[p + 1])]

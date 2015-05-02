@@ -66,7 +66,6 @@ class CanvasFrame(tk.Frame):
 
     def putSolution(self, nodes, solution):
         self.canvas.delete("path_line")
-        solution.append(solution[0])
         for c in range(0, len(solution) - 1):
             start = nodes[int(solution[c])]
             end = nodes[int(solution[c + 1])]
