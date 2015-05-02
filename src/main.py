@@ -122,11 +122,11 @@ class MainApplication(tk.Frame):
             self.selectedColor = color_old
 
     def addNode(self, xc, yc):
-        # pass data to frames
-        self.canvas.addNode(xc, yc, tsputil.colors[self.selectedColor])
         # update data
         new_node = Node(len(self.nodes), xc, yc, self.selectedColor)
         self.nodes.append(new_node)
+        # pass data to frames
+        self.canvas.addNode(xc, yc, tsputil.colors[self.selectedColor])
         self.sidebar.addNode(new_node)
 
     def deleteNode(self, xc, yc):
