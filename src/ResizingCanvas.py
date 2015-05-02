@@ -99,6 +99,7 @@ class ResizingCanvas(tk.Canvas):
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
         self.drawCenterOfMass()
+        self.drawGeometricalCenter()
 
     def drawCenterOfMass(self):
         self.delete("com")
@@ -113,6 +114,22 @@ class ResizingCanvas(tk.Canvas):
         self.move(
             com, self.padding * self.wscale, self.padding * self.hscale)
         self.tag_lower("com")
+
+    def drawGeometricalCenter(self):
+        self.delete("cog")
+        maxima = [0, 0]
+        minima = [float("Inf"), float("Inf")]
+        nodes = self.parent.getNodes()
+        for n in nodes:
+            maxima = [max(n.x, maxima[0]), max(n.y, maxima[1])]
+            minima = [min(n.x, minima[0]), min(n.y, minima[1])]
+        x = (maxima[0] + minima[0]) / 2
+        y = (maxima[1] + minima[1]) / 2
+        cog = self.circle(
+            x, y, 0.2, outline="#f44", width=3, fill="", tags="cog")
+        self.move(
+            cog, self.padding * self.wscale, self.padding * self.hscale)
+        self.tag_lower("cog")
 
     def line(self, x1, y1, x2, y2):
         line = self.create_line(
