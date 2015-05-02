@@ -98,7 +98,12 @@ class SidebarFrame(tk.Frame):
         self.filename_label.config(text="Filename: " + filename)
 
     def addPathInfo(self, nodes, path):
+        self.removePathInfo()
         self.infoListBox.insert(0, "Minimal tourlength: " +
                                 str(tsputil.getPathLength(nodes,
                                                           self.parent.scale,
                                                           path)))
+        self.infoListBox.insert(1, "Tour: " + str(path))
+
+    def removePathInfo(self):
+        self.infoListBox.delete(0, tk.END)

@@ -75,6 +75,7 @@ class MainApplication(tk.Frame):
             lambda f: tsputil.solveTSP(f, self.putSolution), dummy)
 
     def clearPath(self, event=None):
+        self.sidebar.removePathInfo()
         self.canvas.clearPath()
 
     def putSolution(self, solution):
