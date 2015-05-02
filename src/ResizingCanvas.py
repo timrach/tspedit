@@ -67,16 +67,20 @@ class ResizingCanvas(tk.Canvas):
 
     def onMotion(self, event):
         # get relative field coordinates
-        q = math.floor(event.x / (self.fieldsize * self.wscale))
-        r = math.floor(event.y / (self.fieldsize * self.hscale))
+        q = math.floor(
+            (event.x - self.padding) / (self.fieldsize * self.wscale))
+        r = math.floor(
+            (event.y - self.padding) / (self.fieldsize * self.hscale))
         self.parent.updatePositionLabel(q, r)
 
     def canvas_clicked(self, event):
         """Callback for the click-event on the canvas area
         Draws a point at the clicked position"""
         # get relative field coordinates
-        q = math.floor(event.x / (self.fieldsize * self.wscale))
-        r = math.floor(event.y / (self.fieldsize * self.hscale))
+        q = math.floor(
+            (event.x - self.padding) / (self.fieldsize * self.wscale))
+        r = math.floor(
+            (event.y - self.padding) / (self.fieldsize * self.hscale))
         # only do something if the clicked position is within bounds
         if(q < self.cols and r < self.rows and q >= 0 and r >= 0):
             point = self.points[r * self.cols + q]
