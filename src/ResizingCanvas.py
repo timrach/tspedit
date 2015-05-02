@@ -103,6 +103,25 @@ class ResizingCanvas(tk.Canvas):
         self.points[index] = point
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
+        self.drawCenterOfMass()
+
+    def drawCenterOfMass(self):
+        self.delete("com")
+        result = [0, 0]
+        nodes = self.parent.getNodes()
+        for n in nodes:
+            result = [result[0] + n.x, result[1] + n.y]
+        x = result[0] / len(nodes)
+        y = result[1] / len(nodes)
+        com = self.create_oval(
+            (x * self.fieldsize + 5) * self.wscale,
+            (y * self.fieldsize + 5) * self.hscale,
+            ((x + 1) * self.fieldsize - 5) * self.wscale,
+            ((y + 1) * self.fieldsize - 5) * self.hscale,
+            outline="#44f", width=2, fill="", tags="com")
+        self.move(
+            com, self.padding * self.wscale, self.padding * self.hscale)
+        self.tag_lower("com")
 
     def line(self, x1, y1, x2, y2):
         line = self.create_line(
