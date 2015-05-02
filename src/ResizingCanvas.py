@@ -94,12 +94,7 @@ class ResizingCanvas(tk.Canvas):
         """ draws a point on the specified position on the canvas and adds
         the data to the nodes and points arrays and the nodes listbox"""
         index = y * self.cols + x
-        point = self.create_oval(
-            (x * self.fieldsize + 2) * self.wscale,
-            (y * self.fieldsize + 2) * self.hscale,
-            ((x + 1) * self.fieldsize - 2) * self.wscale,
-            ((y + 1) * self.fieldsize - 2) * self.hscale,
-            fill=color, tags="node")
+        point = self.circle(x, y, 0.5, fill=color, tags="node")
         self.points[index] = point
         self.move(
             point, self.padding * self.wscale, self.padding * self.hscale)
@@ -113,12 +108,8 @@ class ResizingCanvas(tk.Canvas):
             result = [result[0] + n.x, result[1] + n.y]
         x = result[0] / len(nodes)
         y = result[1] / len(nodes)
-        com = self.create_oval(
-            (x * self.fieldsize + 5) * self.wscale,
-            (y * self.fieldsize + 5) * self.hscale,
-            ((x + 1) * self.fieldsize - 5) * self.wscale,
-            ((y + 1) * self.fieldsize - 5) * self.hscale,
-            outline="#44f", width=2, fill="", tags="com")
+        com = self.circle(
+            x, y, 0.2, outline="#44f", width=3, fill="", tags="com")
         self.move(
             com, self.padding * self.wscale, self.padding * self.hscale)
         self.tag_lower("com")
@@ -135,6 +126,15 @@ class ResizingCanvas(tk.Canvas):
             fill="black", tags="path_line")
         self.move(
             line, self.padding * self.wscale, self.padding * self.hscale)
+
+    def circle(self, x, y, _radius, **options):
+        radius = _radius * self.fieldsize * 0.7071
+        # math.sin(math.radians(45) = 0.7071
+        x1 = ((x + 0.5) * self.fieldsize - radius) * self.wscale
+        y1 = ((y + 0.5) * self.fieldsize - radius) * self.hscale
+        x2 = ((x + 0.5) * self.fieldsize + radius) * self.wscale
+        y2 = ((y + 0.5) * self.fieldsize + radius) * self.hscale
+        return self.create_oval(x1, y1, x2, y2, **options)
 
     def deleteNode(self, x, y):
         self.delete(self.points[y * self.cols + x])
