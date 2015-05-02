@@ -10,6 +10,8 @@ class ResizingCanvas(tk.Canvas):
         self.configure(highlightthickness=0)
         self.height = self.winfo_reqheight()
         self.width = self.winfo_reqwidth()
+        self.com = 1
+        self.cog = 1
         self.hscale = 1.0
         self.wscale = 1.0
         self.fieldsize = 30
@@ -156,3 +158,17 @@ class ResizingCanvas(tk.Canvas):
     def deleteNode(self, x, y):
         self.delete(self.points[y * self.cols + x])
         self.points[y * self.cols + x] = None
+
+    def setCom(self, value):
+        self.com = value
+        if self.com:
+            self.drawCenterOfMass()
+        else:
+            self.delete("com")
+
+    def setCog(self, value):
+        self.cog = value
+        if self.cog:
+            self.drawGeometricalCenter()
+        else:
+            self.delete("cog")

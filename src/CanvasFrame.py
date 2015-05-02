@@ -24,18 +24,22 @@ class CanvasFrame(tk.Frame):
             bottomBarFrame, text="( X:0 , Y:0 )")
 
         # CENTER OF MASS SETTING
-        enableComDrawing = tk.IntVar()
+        enableComDrawing = tk.IntVar(bottomBarFrame)
+        enableComDrawing.set(1)
         self.comCheckButton = tk.Checkbutton(
             bottomBarFrame, text="Draw center of mass ",
-            variable=enableComDrawing)
+            variable=enableComDrawing, onvalue=1, offvalue=0,
+            command=lambda: self.canvas.setCom(enableComDrawing.get()))
 
         # CENTER OF GEOMETRY SETTING
-        enableCogDrawing = tk.IntVar()
+        enableCogDrawing = tk.IntVar(bottomBarFrame)
+        enableCogDrawing.set(1)
         self.cogCheckButton = tk.Checkbutton(
             bottomBarFrame, text="Draw geometrical center",
-            variable=enableCogDrawing)
+            variable=enableCogDrawing, onvalue=1, offvalue=0,
+            command=lambda: self.canvas.setCog(enableCogDrawing.get()))
 
-        bottomBarFrame.pack(side=tk.BOTTOM, anchor=tk.E)
+        bottomBarFrame.pack(side=tk.BOTTOM, anchor=tk.E, fill=tk.X)
         self.position_label.pack(side=tk.RIGHT)
         self.comCheckButton.pack(side=tk.LEFT)
         self.cogCheckButton.pack(side=tk.LEFT)
