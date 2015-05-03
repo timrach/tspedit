@@ -6,6 +6,8 @@ import tsputil
 
 
 def parseTSPFile(file):
+    """ Parses data from a tspfile with regexes and returns a tuple
+    holding the nodes and groupinformation"""
     # Parse nodes
     node_regex = re.compile("([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)",
                             re.MULTILINE)
@@ -43,7 +45,7 @@ def getGroups(nodes):
 
 
 def constructGroupsString(nodes):
-    """ """
+    """ Constructs a string representing the grouping of nodes """
     groups = getGroups(nodes)
     if (len(groups) <= 1):
         return ""
@@ -60,6 +62,7 @@ def constructGroupsString(nodes):
 
 
 def parseSolutionfile(file):
+    """ Returns the concatenated lines 1 to END """
     result = ""
     f = open(file, 'r')
     lines = f.readlines()
@@ -69,6 +72,8 @@ def parseSolutionfile(file):
 
 
 def importTSP(callback):
+    """ Shows a filedialog to select a file to open and calls the callback
+        with the parsed data  """
     # show a open-file-dialog
     filename = askopenfile()
     # if the user selected a file, delete old data,parse the file and
@@ -79,6 +84,7 @@ def importTSP(callback):
 
 
 def exportTSP(nodes, scale, callback, preFilename=None):
+    """ Exports the problem data in .tsp format  """
     filename = preFilename
     # check if the function was called with a filename
     if filename is None:
@@ -108,6 +114,7 @@ def exportTSP(nodes, scale, callback, preFilename=None):
 
 
 def exportTIKZ(nodes, scale):
+    """ Exports the problem data as a tikz graphic in .tex format  """
     filename = asksaveasfile(defaultextension=".tex")
     if filename:
         f = open(filename.name, 'w')

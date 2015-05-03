@@ -10,6 +10,12 @@ import tspio
 
 class MainApplication(tk.Frame):
 
+    """ The MainApplication Module holds references to all frames drawn
+    in the main window. It holds all atomic data and acts as an
+    interface for the communication between modules. 
+    That way all events are initially passed to this module which
+    distributes the data to the other modules"""
+
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
@@ -17,6 +23,7 @@ class MainApplication(tk.Frame):
         self.scale = 100  # factor coordinates are scaled with
         self.selectedColor = 0  # active colorid
         self.nodes = []  # internal node representation
+        self.solution = []  # container for the drawn solution
 
         """ GUI """
         self.configure(padx=10, pady=10)
@@ -26,6 +33,7 @@ class MainApplication(tk.Frame):
         self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
+        """ MENU BAR """
         menubar = tk.Menu(parent)
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label="Import .tsp", command=self.importTSP,
@@ -63,35 +71,56 @@ class MainApplication(tk.Frame):
 
     def clear(self, event=None):
         """ Clears all problem data from the program and resets the UI """
-        self.nodes = []  # reset nodes array
+        self.nodes = []
         self.canvas.clear()
         self.sidebar.clear()
 
     def solveTSP(self, event=None):
-        # first export current problem to a temporary file
+        """ Call the util module to solve the currently drawn
+        problem and pass self.putSolution as the callback.
+        As the util module uses an external program which works
+        on .tsp files, the drawn problem is exported to a temporary file"""
         dummy = tsputil.FilenameWrapper("tmpfile.tsp")
         tspio.exportTSP(
             self.nodes, self.scale,
             lambda f: tsputil.solveTSP(f, self.putSolution), dummy)
 
     def clearPath(self, event=None):
+        """ Erase all solution data """
+        self.solution = []
         self.sidebar.removePathInfo()
         self.canvas.clearPath()
 
     def putSolution(self, solution):
+        """ Update the solution data and pass it to the sidebar and canvas """
         solution.append(solution[0])  # append startnode to make tour circular
+        self.solution = solution
         self.canvas.putSolution(self.nodes, solution)
         self.sidebar.addPathInfo(self.nodes, solution)
 
     def exportTSP(self, event=None):
+        """ Export the loaded problem via the IO module in .tsp format"""
         tspio.exportTSP(
             self.nodes, self.scale, lambda f: self.sidebar.setFilename(f))
 
     def exportTIKZ(self, event=None):
+        """ Export the loaded problem via the IO module as a tikz graphic
+        in .tex format"""
         tspio.exportTIKZ(self.nodes, self.scale)
 
     def importTSP(self, event=None):
+        """ Load data from a .tsp file via the IO module """
         tspio.importTSP(self.putLoadedData)
+
+    def nodeSelected(self, coords):
+        """ Gets called when the user selects node in the canvas.
+        Passes the node coordinates to the sidebar module"""
+        self.sidebar.nodeSelected(coords)
+
+    def nodeDeselected(self):
+        """ Gets called when the user deselects node in the canvas.
+        Calls the corresponding method in the sidebar module"""
+        self.sidebar.nodeDeselected()
 
     def putLoadedData(self, filename, nodes, groups):
         """ Fills the internal data structures with the loaded data.
@@ -124,6 +153,8 @@ class MainApplication(tk.Frame):
             self.selectedColor = color_old
 
     def addNode(self, xc, yc):
+        """ Add a node to the nodes array
+        and pass it to the canvas and sidebar"""
         # update data
         new_node = Node(len(self.nodes), xc, yc, self.selectedColor)
         self.nodes.append(new_node)
