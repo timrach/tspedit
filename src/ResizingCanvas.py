@@ -182,7 +182,10 @@ class ResizingCanvas(tk.Canvas):
         return circ
 
     def deleteNode(self, x, y):
-        self.delete(self.points[y * self.cols + x])
+        ind = y * self.cols + x
+        if ind == self.selectedNode:
+            self.nodeSelected(ind)
+        self.delete(self.points[ind])
         self.points[y * self.cols + x] = None
 
     def setCom(self, value):

@@ -90,6 +90,20 @@ class SidebarFrame(tk.Frame):
         self.nodeListLabelFrame.config(text="Coordinates (" +
                                        str(self.node_listBox.size()) + "):")
 
+    def nodeSelected(self, coords):
+        nodes = self.parent.nodes
+        target = None
+        for n in nodes:
+            if n.x == coords[0] and n.y == coords[1]:
+                target = n
+                break
+        self.node_listBox.selection_clear(0, tk.END)
+        self.node_listBox.selection_set(n.id)
+        self.putNodeInfo(coords, nodes, target)
+
+    def nodeDeselected(self):
+        self.addPathInfo(self.parent.nodes, self.parent.solution)
+
     def switchColor(self, *args):
         """ changes the colorvariable according to the selected item in the
         color listbox"""
@@ -111,12 +125,8 @@ class SidebarFrame(tk.Frame):
     def removePathInfo(self):
         self.infoListBox.delete(0, tk.END)
 
-    def putNodeInfo(self, coords, nodes):
-        target = None
-        for n in nodes:
-            if n.x == coords[0] and n.y == coords[1]:
-                target = n
-                break
+    def putNodeInfo(self, coords, nodes, target):
+
         hull = tsputil.get_convex_hull(nodes)
         n = tsputil.nearestNeighbor(nodes, target)
 

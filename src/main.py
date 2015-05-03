@@ -96,10 +96,10 @@ class MainApplication(tk.Frame):
         tspio.importTSP(self.putLoadedData)
 
     def nodeSelected(self, coords):
-        self.sidebar.putNodeInfo(coords, self.nodes)
+        self.sidebar.nodeSelected(coords)
 
     def nodeDeselected(self):
-        self.sidebar.addPathInfo(self.nodes, self.solution)
+        self.sidebar.nodeDeselected()
 
     def putLoadedData(self, filename, nodes, groups):
         """ Fills the internal data structures with the loaded data.
