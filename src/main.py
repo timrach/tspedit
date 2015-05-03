@@ -17,6 +17,7 @@ class MainApplication(tk.Frame):
         self.scale = 100  # factor coordinates are scaled with
         self.selectedColor = 0  # active colorid
         self.nodes = []  # internal node representation
+        self.solution = []
 
         """ GUI """
         self.configure(padx=10, pady=10)
@@ -80,6 +81,7 @@ class MainApplication(tk.Frame):
 
     def putSolution(self, solution):
         solution.append(solution[0])  # append startnode to make tour circular
+        self.solution = solution
         self.canvas.putSolution(self.nodes, solution)
         self.sidebar.addPathInfo(self.nodes, solution)
 
@@ -92,6 +94,12 @@ class MainApplication(tk.Frame):
 
     def importTSP(self, event=None):
         tspio.importTSP(self.putLoadedData)
+
+    def nodeSelected(self, coords):
+        self.sidebar.putNodeInfo(coords, self.nodes)
+
+    def nodeDeselected(self):
+        self.sidebar.addPathInfo(self.nodes, self.solution)
 
     def putLoadedData(self, filename, nodes, groups):
         """ Fills the internal data structures with the loaded data.

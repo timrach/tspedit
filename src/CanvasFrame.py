@@ -74,3 +74,9 @@ class CanvasFrame(tk.Frame):
 
     def clearPath(self):
         self.canvas.delete("path_line")
+
+    def nodeSelected(self, coords):
+        self.parent.nodeSelected(coords)
+
+    def nodeDeselected(self):
+        self.parent.nodeDeselected()

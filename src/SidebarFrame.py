@@ -99,12 +99,29 @@ class SidebarFrame(tk.Frame):
         self.filename_label.config(text="Filename: " + filename)
 
     def addPathInfo(self, nodes, path):
+        par = self.parent
         self.removePathInfo()
-        self.infoListBox.insert(0, "Minimal tourlength: " +
-                                str(tsputil.getPathLength(nodes,
-                                                          self.parent.scale,
-                                                          path)))
-        self.infoListBox.insert(1, "Tour: " + str(path))
+        if path:
+            self.infoListBox.insert(0, "Minimal tourlength: " +
+                                    str(tsputil.getPathLength(nodes,
+                                                              par.scale,
+                                                              path)))
+            self.infoListBox.insert(1, "Tour: " + str(path))
 
     def removePathInfo(self):
         self.infoListBox.delete(0, tk.END)
+
+    def putNodeInfo(self, coords, nodes):
+        target = None
+        for n in nodes:
+            if n.x == coords[0] and n.y == coords[1]:
+                target = n
+                break
+        hull = tsputil.get_convex_hull(nodes)
+        n = tsputil.nearestNeighbor(nodes, target)
+
+        self.removePathInfo()
+        self.infoListBox.insert(0, "Coordinates: " + str(coords))
+        self.infoListBox.insert(1, "Color: " + tsputil.colors[target.color])
+        self.infoListBox.insert(2, "On Convex Hull: " + str(target in hull))
+        self.infoListBox.insert(3, "Nearest Neighbor: " + str(n))

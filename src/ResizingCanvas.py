@@ -10,6 +10,7 @@ class ResizingCanvas(tk.Canvas):
         self.configure(highlightthickness=0)
         self.height = self.winfo_reqheight()
         self.width = self.winfo_reqwidth()
+        self.selectedNode = None
         self.com = 1
         self.cog = 1
         self.hscale = 1.0
@@ -89,7 +90,8 @@ class ResizingCanvas(tk.Canvas):
                 self.parent.parent.addNode(q, r)
             # else delete it if there is one
             else:
-                self.parent.parent.deleteNode(q, r)
+                pass
+                # self.parent.parent.deleteNode(q, r)
 
     def clear(self):
         self.delete(tk.ALL)
@@ -104,13 +106,28 @@ class ResizingCanvas(tk.Canvas):
                             activeoutline="Orange", activewidth=3)
         self.tag_bind(point, "<Button-1>", lambda e: self.nodeSelected(index))
         self.points[index] = point
-        self.move(
-            point, self.padding * self.wscale, self.padding * self.hscale)
         self.drawCenterOfMass()
         self.drawGeometricalCenter()
 
+    def indToCoord(self, index):
+        y = math.floor(index / self.cols)
+        x = index - y * self.cols
+        return (x, y)
+
     def nodeSelected(self, index):
-        print(index)
+        self.delete("selector")
+        if self.selectedNode == index:
+            self.selectedNode = None
+            self.parent.nodeDeselected()
+        else:
+            self.selectedNode = index
+            self.parent.nodeSelected(self.indToCoord(index))
+            self.drawSelectionIndicator(index)
+
+    def drawSelectionIndicator(self, index):
+        coords = self.indToCoord(index)
+        self.circle(coords[0], coords[1], 0.5, outline="#f44", width=3,
+                    fill="", tags="selector")
 
     def drawCenterOfMass(self):
         self.delete("com")
@@ -120,10 +137,8 @@ class ResizingCanvas(tk.Canvas):
             result = [result[0] + n.x, result[1] + n.y]
         x = result[0] / len(nodes)
         y = result[1] / len(nodes)
-        com = self.circle(
+        self.circle(
             x, y, 0.2, outline="#44f", width=3, fill="", tags="com")
-        self.move(
-            com, self.padding * self.wscale, self.padding * self.hscale)
         self.tag_lower("com")
 
     def drawGeometricalCenter(self):
@@ -136,10 +151,8 @@ class ResizingCanvas(tk.Canvas):
             minima = [min(n.x, minima[0]), min(n.y, minima[1])]
         x = (maxima[0] + minima[0]) / 2
         y = (maxima[1] + minima[1]) / 2
-        cog = self.circle(
+        self.circle(
             x, y, 0.2, outline="#f44", width=3, fill="", tags="cog")
-        self.move(
-            cog, self.padding * self.wscale, self.padding * self.hscale)
         self.tag_lower("cog")
 
     def line(self, x1, y1, x2, y2):
@@ -163,7 +176,10 @@ class ResizingCanvas(tk.Canvas):
         y1 = ((y + 0.5) * self.fieldsize - radius) * self.hscale
         x2 = ((x + 0.5) * self.fieldsize + radius) * self.wscale
         y2 = ((y + 0.5) * self.fieldsize + radius) * self.hscale
-        return self.create_oval(x1, y1, x2, y2, **options)
+        circ = self.create_oval(x1, y1, x2, y2, **options)
+        self.move(
+            circ, self.padding * self.wscale, self.padding * self.hscale)
+        return circ
 
     def deleteNode(self, x, y):
         self.delete(self.points[y * self.cols + x])
