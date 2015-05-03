@@ -1,5 +1,9 @@
 class Node:
 
+    """ Represents a node in a 2D cell array
+        at position x,y. The node has an id and a color
+        represented by an integer value """
+
     def __init__(self, id, x, y, color):
         self.id = id
         self.x = x
@@ -7,6 +11,7 @@ class Node:
         self.color = color
 
     def toString(self):
+        """ Construct a string with the node informations """
         xdelim = ""
         if(self.x < 10):
             xdelim = "  "

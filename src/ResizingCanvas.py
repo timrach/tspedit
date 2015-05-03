@@ -4,7 +4,10 @@ import math
 
 class ResizingCanvas(tk.Canvas):
 
+    """ The Canvas Module. All drawable data is drawn here"""
+
     def __init__(self, parent, **kwargs):
+        """ DATA """
         tk.Canvas.__init__(self, parent, **kwargs)
         self.parent = parent
         self.configure(highlightthickness=0)
@@ -21,16 +24,18 @@ class ResizingCanvas(tk.Canvas):
         self.cols = math.floor(self.width / self.fieldsize)
         self.points = [None for i in range(0, self.rows * self.cols)]
 
-        # register the canvas area for click and hover events.
-        # If the user clicks on the canvas call the canvas_clicked method
-        # when the user hovers over the canvas, the position indicator label
-        # is updated to show the coordinates of the selected field
+        """ register the canvas area for click and hover events.
+            If the user clicks on the canvas call the canvas_clicked method
+            when the user hovers over the canvas, the position indicator label
+            is updated to show the coordinates of the selected field """
         self.bind("<Button-1>", self.canvas_clicked)
         self.bind("<Motion>", self.onMotion)
         self.bind("<Configure>", self.on_resize)
         self.drawGrid()
 
     def on_resize(self, event):
+        """ Gets called whenever the window is resized.
+        Handles correct item scaling and updates data fields"""
         # determine the ratio of old width/height to new width/height
         wscale = float(event.width) / self.width
         hscale = float(event.height) / self.height
@@ -44,7 +49,8 @@ class ResizingCanvas(tk.Canvas):
         self.scale("all", 0, 0, wscale, hscale)
 
     def drawGrid(self):
-        """Draws the grid for the node positions on the canvas"""
+        """Draws the grid for the node positions on the canvas
+        as gray lines."""
         # draw vertical lines
         for x in range(0, self.cols + 1):
             xcoord = x * self.fieldsize
@@ -67,6 +73,8 @@ class ResizingCanvas(tk.Canvas):
         self.move("all", 5, 5)
 
     def onMotion(self, event):
+        """ Gets called whenever the mouse is moved on the canvas.
+        Calls the update routine for the position indicator label"""
         # get relative field coordinates
         q = math.floor(
             (event.x - self.padding) / (self.fieldsize * self.wscale))
@@ -75,8 +83,10 @@ class ResizingCanvas(tk.Canvas):
         self.parent.updatePositionLabel(q, r)
 
     def canvas_clicked(self, event):
-        """Callback for the click-event on the canvas area
-        Draws a point at the clicked position"""
+        """Callback for the click-event on the canvas area.
+        Draws a point at the clicked position if the position is empty.
+        If the click was on an existing point, the point is selected
+        and the event passed to the other modules."""
         # get relative field coordinates
         q = math.floor(
             (event.x - self.padding) / (self.fieldsize * self.wscale))
@@ -94,27 +104,33 @@ class ResizingCanvas(tk.Canvas):
                 # self.parent.parent.deleteNode(q, r)
 
     def clear(self):
+        """ Clear all drawn objects and redraw the grid"""
         self.delete(tk.ALL)
         self.drawGrid()
         self.scale("all", 0, 0, self.wscale, self.hscale)
 
     def addNode(self, x, y, color):
         """ draws a point on the specified position on the canvas and adds
-        the data to the nodes and points arrays and the nodes listbox"""
+        the data to the nodes and points arrays"""
         index = y * self.cols + x
         point = self.circle(x, y, 0.5, fill=color, tags="node",
                             activeoutline="Orange", activewidth=3)
+        # register point for the click event
         self.tag_bind(point, "<Button-1>", lambda e: self.nodeSelected(index))
         self.points[index] = point
         self.drawCenterOfMass()
         self.drawGeometricalCenter()
 
     def indToCoord(self, index):
+        """ Converts an index to X,Y coordinates """
         y = math.floor(index / self.cols)
         x = index - y * self.cols
         return (x, y)
 
     def nodeSelected(self, index):
+        """ Selects the point at the index position.
+        If the point is already selected, it is deselected.
+        In both cases the event is passed to the other modules"""
         self.delete("selector")
         if self.selectedNode == index:
             self.selectedNode = None
@@ -125,11 +141,13 @@ class ResizingCanvas(tk.Canvas):
             self.drawSelectionIndicator(index)
 
     def drawSelectionIndicator(self, index):
+        """ Draws a red ring around the selected point """
         coords = self.indToCoord(index)
         self.circle(coords[0], coords[1], 0.5, outline="#f44", width=3,
                     fill="", tags="selector")
 
     def drawCenterOfMass(self):
+        """ Draws a small blue ring at the center of mass position """
         self.delete("com")
         result = [0, 0]
         nodes = self.parent.getNodes()
@@ -142,6 +160,7 @@ class ResizingCanvas(tk.Canvas):
         self.tag_lower("com")
 
     def drawGeometricalCenter(self):
+        """ Draws a small blue ring at the geometrical center """
         self.delete("cog")
         maxima = [0, 0]
         minima = [float("Inf"), float("Inf")]
@@ -156,6 +175,7 @@ class ResizingCanvas(tk.Canvas):
         self.tag_lower("cog")
 
     def line(self, x1, y1, x2, y2):
+        """ Draws a line from cell x1,y1 to cell x2,y2 """
         line = self.create_line(
             (x1 * self.fieldsize + (self.fieldsize / 2)) * self.wscale,
             (y1 * self.fieldsize + (self.fieldsize / 2)) *
@@ -170,6 +190,7 @@ class ResizingCanvas(tk.Canvas):
             line, self.padding * self.wscale, self.padding * self.hscale)
 
     def circle(self, x, y, _radius, **options):
+        """ Draws a circle at the center of cell x,y with radius _radius """
         radius = _radius * self.fieldsize * 0.7071
         # math.sin(math.radians(45) = 0.7071
         x1 = ((x + 0.5) * self.fieldsize - radius) * self.wscale
@@ -182,6 +203,7 @@ class ResizingCanvas(tk.Canvas):
         return circ
 
     def deleteNode(self, x, y):
+        """ Delete the point at cell x,y"""
         ind = y * self.cols + x
         if ind == self.selectedNode:
             self.nodeSelected(ind)
@@ -189,6 +211,7 @@ class ResizingCanvas(tk.Canvas):
         self.points[y * self.cols + x] = None
 
     def setCom(self, value):
+        "Dis-/Enables the drawing of the center of mass"
         self.com = value
         if self.com:
             self.drawCenterOfMass()
@@ -196,6 +219,7 @@ class ResizingCanvas(tk.Canvas):
             self.delete("com")
 
     def setCog(self, value):
+        "Dis-/Enables the drawing of the geometrical center"
         self.cog = value
         if self.cog:
             self.drawGeometricalCenter()

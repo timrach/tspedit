@@ -4,6 +4,9 @@ from ResizingCanvas import *
 
 class CanvasFrame(tk.Frame):
 
+    """ The CanvasFrame Module handles the UI for the canvas and passes
+    events and data between the MainApplication and the Canvas"""
+
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -13,7 +16,6 @@ class CanvasFrame(tk.Frame):
         self.height = 650  # Canvasheight
 
         """ GUI """
-
         self.canvas = ResizingCanvas(
             self, width=self.width, height=self.height, relief=tk.SUNKEN)
 
@@ -52,6 +54,19 @@ class CanvasFrame(tk.Frame):
         self.position_label.config(
             text=("( X:" + str(q) + " , " + "Y:" + str(r)) + ")")
 
+    def putSolution(self, nodes, solution):
+        """ Draws the solution on the canvas """
+        self.canvas.delete("path_line")
+        for c in range(0, len(solution) - 1):
+            start = nodes[int(solution[c])]
+            end = nodes[int(solution[c + 1])]
+            self.canvas.line(start.x, start.y, end.x, end.y)
+        self.canvas.tag_raise("node")
+
+    """ COMMUNICATION METHODS
+        The methods in this block are used to pass data and events
+        from the main application to the canvas"""
+
     def addNode(self, x, y, color):
         self.canvas.addNode(x, y, color)
 
@@ -63,14 +78,6 @@ class CanvasFrame(tk.Frame):
 
     def getNodes(self):
         return self.parent.getNodes()
-
-    def putSolution(self, nodes, solution):
-        self.canvas.delete("path_line")
-        for c in range(0, len(solution) - 1):
-            start = nodes[int(solution[c])]
-            end = nodes[int(solution[c + 1])]
-            self.canvas.line(start.x, start.y, end.x, end.y)
-        self.canvas.tag_raise("node")
 
     def clearPath(self):
         self.canvas.delete("path_line")
