@@ -104,7 +104,8 @@ class MainApplication(tk.Frame):
         self.canvas.clearPath()
 
     def putSolution(self, solution):
-        """ Update the solution data and pass it to the sidebar and canvas """
+        """ Update the solution data and pass it to the sidebar and canvas.
+        The solution is a list of indices."""
         solution.append(solution[0])  # append startnode to make tour circular
         self.solution = solution
         self.canvas.putSolution(self.nodes, solution)
