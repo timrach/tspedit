@@ -53,6 +53,10 @@ class MainApplication(tk.Frame):
         tspmenu.add_command(label="Solve tsp", command=self.solveTSP,
                             accelerator="Ctrl+P")
         self.bind_all("<Control-p>", self.solveTSP)
+        tspmenu.add_command(label="Show convex hull",
+                            command=self.showConvexHull,
+                            accelerator="Ctrl+H")
+        self.bind_all("<Control-h>", self.showConvexHull)
         tspmenu.add_command(label="Clear path", command=self.clearPath,
                             accelerator="Ctrl+Shift+P")
         self.bind_all("<Control-Shift-p>", self.clearPath)
@@ -84,6 +88,14 @@ class MainApplication(tk.Frame):
         tspio.exportTSP(
             self.nodes, self.scale,
             lambda f: tsputil.solveTSP(f, self.putSolution), dummy)
+
+    def showConvexHull(self, event=None):
+        """ Call the util module to calculate the convex hull and
+        pass self.putSolution as the callback."""
+        solution = tsputil.get_convex_hull(self.nodes)
+        # map nodes to their ids
+        solution = list(map(lambda n: n.id, solution))
+        self.putSolution(solution)
 
     def clearPath(self, event=None):
         """ Erase all solution data """
