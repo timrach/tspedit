@@ -8,31 +8,55 @@ import tsputil
 def parseTSPFile(file):
     """ Parses data from a tspfile with regexes and returns a tuple
     holding the nodes and groupinformation"""
+
+    # Parse Name
+    name_regex = re.compile("NAME : (.*)")
+    # Parse comment
+    comment_regex = re.compile("COMMENT : (.*)")
+    # Parse startnode
+    start_regex = re.compile("COMMENT : STARTNODE : ([0-9])+")
     # Parse nodes
     node_regex = re.compile("([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)",
                             re.MULTILINE)
     # Parse Clusters
     cluster_regex = re.compile("COMMENT : CLUSTERS : (.*)")
 
+    name = "No Name"
+    comment = ""
+    startnode = None
     nodes = []
     groups = []
 
     f = open(file, 'r')
     lines = f.readlines()
     for l in range(len(lines)):
-        m = re.match(node_regex, lines[l])
-        n = re.match(cluster_regex, lines[l])
-        if m and len(lines[l]):
-            x = int(m.group(2))
-            y = int(m.group(3))
-            nodes.append([x, y])
-        if n and len(lines[l]):
-            groups = n.group(1)
-            groups = groups.replace(" ", "")
-            groups = ast.literal_eval(groups)
-
+        nar = re.match(name_regex, lines[l])
+        nr = re.match(node_regex, lines[l])
+        cor = re.match(comment_regex, lines[l])
+        clr = re.match(cluster_regex, lines[l])
+        if len(lines[l]):
+            sr = re.match(start_regex, lines[l])
+            # Match Filename
+            if nar:
+                name = nar.group(1)
+            # Match coordinates
+            if nr:
+                x = int(nr.group(2))
+                y = int(nr.group(3))
+                nodes.append([x, y])
+            # Match Comments
+            if cor:
+                # Match Clusters
+                if clr:
+                    groups = clr.group(1)
+                    groups = groups.replace(" ", "")
+                    groups = ast.literal_eval(groups)
+                elif sr:
+                    startnode = sr.group(1)
+                else:
+                    comment = comment + "\n" + cor.group(1)
     f.close
-    return (nodes, groups)
+    return (name, comment, startnode, nodes, groups)
 
 
 def getGroups(nodes):
@@ -79,7 +103,7 @@ def importTSP(callback):
     # if the user selected a file, delete old data,parse the file and
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
-        nodes, groups = parseTSPFile(filename.name)
+        name, comment, startnode, nodes, groups = parseTSPFile(filename.name)
         callback(os.path.basename(filename.name), nodes, groups)
 
 
