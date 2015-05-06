@@ -105,6 +105,7 @@ class ResizingCanvas(tk.Canvas):
 
     def clear(self):
         """ Clear all drawn objects and redraw the grid"""
+        self.points = [None for i in range(0, self.rows * self.cols)]
         self.delete(tk.ALL)
         self.drawGrid()
         self.scale("all", 0, 0, self.wscale, self.hscale)

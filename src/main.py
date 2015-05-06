@@ -76,6 +76,7 @@ class MainApplication(tk.Frame):
     def clear(self, event=None):
         """ Clears all problem data from the program and resets the UI """
         self.nodes = []
+        self.solution = []
         self.canvas.clear()
         self.sidebar.clear()
 
