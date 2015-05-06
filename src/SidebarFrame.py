@@ -133,10 +133,10 @@ class SidebarFrame(tk.Frame):
         par = self.parent
         self.removePathInfo()
         if path:
-            self.infoListBox.insert(0, "Minimal tourlength: " +
+            self.infoListBox.insert(0, "Tour: " + str(path))
+            self.infoListBox.insert(1, "Tourlength: " +
                                     str(tsputil.getPathLength(nodes, par.scale,
                                                               path)))
-            self.infoListBox.insert(1, "Tour: " + str(path))
 
     def removePathInfo(self):
         """ Clears the infobox """
