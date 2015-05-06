@@ -12,7 +12,7 @@ class MainApplication(tk.Frame):
 
     """ The MainApplication Module holds references to all frames drawn
     in the main window. It holds all atomic data and acts as an
-    interface for the communication between modules. 
+    interface for the communication between modules.
     That way all events are initially passed to this module which
     distributes the data to the other modules"""
 
