@@ -138,7 +138,7 @@ class ResizingCanvas(tk.Canvas):
             self.parent.nodeDeselected()
         else:
             self.selectedNode = index
-            self.parent.nodeSelected(self.indToCoord(index))
+            self.parent.nodeSelected(index)
             self.drawSelectionIndicator(index)
 
     def drawSelectionIndicator(self, index):

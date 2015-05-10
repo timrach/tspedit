@@ -77,13 +77,13 @@ class CanvasFrame(tk.Frame):
         self.canvas.clear()
 
     def getNodes(self):
-        return self.parent.getNodes()
+        return self.parent.getData('nodes')
 
     def clearPath(self):
         self.canvas.delete("path_line")
 
-    def nodeSelected(self, coords):
-        self.parent.nodeSelected(coords)
+    def nodeSelected(self, index):
+        self.parent.commitChange('selectedNode', index)
 
     def nodeDeselected(self):
-        self.parent.nodeDeselected()
+        self.parent.commitChange('selectedNode', -1)
