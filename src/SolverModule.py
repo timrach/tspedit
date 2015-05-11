@@ -25,14 +25,15 @@ class SolverModule:
             dummy = tsputil.FilenameWrapper("tmpfile.tsp")
             # generate temporary file containing the current problem
             filename = tspio.exportTSP(nodes, scale, comment, dummy)
+            directory = os.path.dirname(os.path.realpath(__file__))
 
             # Check operating system first
             sysos = platform.system()
             # and call the corresponding binary of concorde
             if sysos == "Darwin":
-                subprocess.call(["../bin/concorde-osx", filename])
+                subprocess.call([directory + "/../bin/concorde-osx", filename])
             elif sysos == "Linux":
-                subprocess.call(["../bin/concorde-fedora", filename])
+                subprocess.call([directory + "/../bin/concorde-fedora", filename])
             elif sysos == "Windows":
                 return  # this function is not supported under windows yet
             else:
