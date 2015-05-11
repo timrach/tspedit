@@ -39,11 +39,12 @@ class FileInfoWidget(SidebarWidget):
 
     def onTextChange(self, event):
         filename = self._datacontroller.getData('fileinfo')['filename']
+        comment = self._commentText.get(
+            0.0, tk.END).replace('\n', '').strip(' \t\n\r')
         self._datacontroller.commitChange(
             'fileinfo',
             {'filename': filename,
-             'comment': self._commentText.get(0.0,
-                                              tk.END)})
+             'comment': comment})
 
     def dataUpdate(self, key, data):
         if key is 'startnode':
