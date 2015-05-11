@@ -1,17 +1,25 @@
 import tkinter as tk
+from Node import *
 import math
+import copy
 
 
 class ResizingCanvas(tk.Canvas):
 
     """ The Canvas Module. All drawable data is drawn here"""
 
-    def __init__(self, parent, **kwargs):
-        """ DATA """
+    def __init__(self, parent, datacontroller, **kwargs):
         tk.Canvas.__init__(self, parent, **kwargs)
-        self.parent = parent
+
         self.configure(highlightthickness=0)
-        self.height = self.winfo_reqheight()
+
+        """ Public vars """
+        self.keywords = ['nodes', 'path', 'selectedNode']
+
+        """ Private vars """
+        self._parent = parent
+        self._datacontroller = datacontroller
+        self._height = self.winfo_reqheight()
         self.width = self.winfo_reqwidth()
         self.selectedNode = None
         self.com = 1
@@ -20,9 +28,10 @@ class ResizingCanvas(tk.Canvas):
         self.wscale = 1.0
         self.fieldsize = 30
         self.padding = 5
-        self.rows = math.floor(self.height / self.fieldsize)
+        self.rows = math.floor(self._height / self.fieldsize)
         self.cols = math.floor(self.width / self.fieldsize)
-        self.points = [None for i in range(0, self.rows * self.cols)]
+        self._points = [None for i in range(0, self.rows * self.cols)]
+        self._nodes = copy.copy(self._datacontroller.getData('nodes'))
 
         """ register the canvas area for click and hover events.
             If the user clicks on the canvas call the canvas_clicked method
@@ -33,16 +42,20 @@ class ResizingCanvas(tk.Canvas):
         self.bind("<Configure>", self.on_resize)
         self.drawGrid()
 
+        self._datacontroller.registerData('selectedNode', ())
+        self._datacontroller.registerData('mouseGridPosition', ())
+        self._datacontroller.registerObserver(self, self.keywords)
+
     def on_resize(self, event):
         """ Gets called whenever the window is resized.
         Handles correct item scaling and updates data fields"""
         # determine the ratio of old width/height to new width/height
         wscale = float(event.width) / self.width
-        hscale = float(event.height) / self.height
+        hscale = float(event.height) / self._height
         self.width = event.width
-        self.height = event.height
+        self._height = event.height
         # resize the canvas
-        self.config(width=self.width, height=self.height)
+        self.config(width=self.width, height=self._height)
         # rescale all the objects tagged with the "all" tag
         self.hscale *= hscale
         self.wscale *= wscale
@@ -80,7 +93,7 @@ class ResizingCanvas(tk.Canvas):
             (event.x - self.padding) / (self.fieldsize * self.wscale))
         r = math.floor(
             (event.y - self.padding) / (self.fieldsize * self.hscale))
-        self.parent.updatePositionLabel(q, r)
+        self._datacontroller.commitChange('mouseGridPosition', (q, r))
 
     def canvas_clicked(self, event):
         """Callback for the click-event on the canvas area.
@@ -94,33 +107,23 @@ class ResizingCanvas(tk.Canvas):
             (event.y - self.padding) / (self.fieldsize * self.hscale))
         # only do something if the clicked position is within bounds
         if(q < self.cols and r < self.rows and q >= 0 and r >= 0):
-            point = self.points[r * self.cols + q]
-            # if there is no node already add one
+            point = self._points[r * self.cols + q]
+            # if there is no node yet, add one
             if point is None:
-                self.parent.parent.addNode(q, r)
-            # else delete it if there is one
-            else:
-                pass
-                # self.parent.parent.deleteNode(q, r)
+                new_nodes = self._datacontroller.getData('nodes')
+                color = self._datacontroller.getData('nodecolor')
+                new_nodes.append(Node(len(new_nodes), q, r, color))
+                self._datacontroller.commitChange('nodes', new_nodes)
 
-    def clear(self):
-        """ Clear all drawn objects and redraw the grid"""
-        self.points = [None for i in range(0, self.rows * self.cols)]
-        self.delete(tk.ALL)
-        self.drawGrid()
-        self.scale("all", 0, 0, self.wscale, self.hscale)
-
-    def addNode(self, x, y, color):
+    def addNode(self, node):
         """ draws a point on the specified position on the canvas and adds
         the data to the nodes and points arrays"""
-        index = y * self.cols + x
-        point = self.circle(x, y, 0.5, fill=color, tags="node",
+        index = node.y * self.cols + node.x
+        point = self.circle(node.x, node.y, 0.5, fill=node.color, tags="node",
                             activeoutline="Orange", activewidth=3)
         # register point for the click event
         self.tag_bind(point, "<Button-1>", lambda e: self.nodeSelected(index))
-        self.points[index] = point
-        self.drawCenterOfMass()
-        self.drawGeometricalCenter()
+        self._points[index] = point
 
     def indToCoord(self, index):
         """ Converts an index to X,Y coordinates """
@@ -132,14 +135,16 @@ class ResizingCanvas(tk.Canvas):
         """ Selects the point at the index position.
         If the point is already selected, it is deselected.
         In both cases the event is passed to the other modules"""
-        self.delete("selector")
         if self.selectedNode == index:
             self.selectedNode = None
-            self.parent.nodeDeselected()
+            self._datacontroller.commitChange('selectedNode', None)
         else:
-            self.selectedNode = index
-            self.parent.nodeSelected(index)
-            self.drawSelectionIndicator(index)
+            # find node in nodes array
+            (x, y) = self.indToCoord(index)
+            for node in self._nodes:
+                if node.x == x and node.y == y:
+                    self._datacontroller.commitChange('selectedNode', node)
+                    break
 
     def drawSelectionIndicator(self, index):
         """ Draws a red ring around the selected point """
@@ -150,30 +155,30 @@ class ResizingCanvas(tk.Canvas):
     def drawCenterOfMass(self):
         """ Draws a small blue ring at the center of mass position """
         self.delete("com")
-        result = [0, 0]
-        nodes = self.parent.getNodes()
-        for n in nodes:
-            result = [result[0] + n.x, result[1] + n.y]
-        x = result[0] / len(nodes)
-        y = result[1] / len(nodes)
-        self.circle(
-            x, y, 0.2, outline="#44f", width=3, fill="", tags="com")
-        self.tag_lower("com")
+        if len(self._nodes):
+            result = [0, 0]
+            for n in self._nodes:
+                result = [result[0] + n.x, result[1] + n.y]
+            x = result[0] / len(self._nodes)
+            y = result[1] / len(self._nodes)
+            self.circle(
+                x, y, 0.2, outline="#44f", width=3, fill="", tags="com")
+            self.tag_lower("com")
 
     def drawGeometricalCenter(self):
         """ Draws a small blue ring at the geometrical center """
         self.delete("cog")
-        maxima = [0, 0]
-        minima = [float("Inf"), float("Inf")]
-        nodes = self.parent.getNodes()
-        for n in nodes:
-            maxima = [max(n.x, maxima[0]), max(n.y, maxima[1])]
-            minima = [min(n.x, minima[0]), min(n.y, minima[1])]
-        x = (maxima[0] + minima[0]) / 2
-        y = (maxima[1] + minima[1]) / 2
-        self.circle(
-            x, y, 0.2, outline="#f44", width=3, fill="", tags="cog")
-        self.tag_lower("cog")
+        if len(self._nodes):
+            maxima = [0, 0]
+            minima = [float("Inf"), float("Inf")]
+            for n in self._nodes:
+                maxima = [max(n.x, maxima[0]), max(n.y, maxima[1])]
+                minima = [min(n.x, minima[0]), min(n.y, minima[1])]
+            x = (maxima[0] + minima[0]) / 2
+            y = (maxima[1] + minima[1]) / 2
+            self.circle(
+                x, y, 0.2, outline="#f44", width=3, fill="", tags="cog")
+            self.tag_lower("cog")
 
     def line(self, x1, y1, x2, y2):
         """ Draws a line from cell x1,y1 to cell x2,y2 """
@@ -203,13 +208,13 @@ class ResizingCanvas(tk.Canvas):
             circ, self.padding * self.wscale, self.padding * self.hscale)
         return circ
 
-    def deleteNode(self, x, y):
+    def deleteNode(self, node):
         """ Delete the point at cell x,y"""
-        ind = y * self.cols + x
+        ind = node.y * self.cols + node.x
         if ind == self.selectedNode:
             self.nodeSelected(ind)
-        self.delete(self.points[ind])
-        self.points[y * self.cols + x] = None
+        self.delete(self._points[ind])
+        self._points[node.y * self.cols + node.x] = None
 
     def setCom(self, value):
         "Dis-/Enables the drawing of the center of mass"
@@ -226,3 +231,31 @@ class ResizingCanvas(tk.Canvas):
             self.drawGeometricalCenter()
         else:
             self.delete("cog")
+
+    def dataUpdate(self, key, data):
+        if key is 'nodes':
+            diffadd = list(set(data)-set(self._nodes))
+            diffsub = list(set(self._nodes) - set(data))
+            for node in diffadd:
+                self.addNode(node)
+            for node in diffsub:
+                self.deleteNode(node)
+            self._nodes = copy.copy(data)
+            self.drawCenterOfMass()
+            self.drawGeometricalCenter()
+        elif key is 'selectedNode':
+            # clear old selection
+            self.delete("selector")
+            self.selectedNode = None
+            if data:
+                # set new selection
+                index = data.y * self.cols + data.x
+                self.selectedNode = index
+                self.drawSelectionIndicator(index)
+        elif key is 'path':
+            self.delete("path_line")
+            for c in range(0, len(data) - 1):
+                start = self._nodes[int(data[c])]
+                end = self._nodes[int(data[c + 1])]
+                self.line(start.x, start.y, end.x, end.y)
+            self.tag_raise("node")
