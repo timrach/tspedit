@@ -2,6 +2,7 @@ import re
 import ast
 import os
 from tkinter.filedialog import asksaveasfile, askopenfile
+from Node import *
 import tsputil
 
 
@@ -54,7 +55,7 @@ def parseTSPFile(file):
                 elif sr:
                     startnode = sr.group(1)
                 else:
-                    comment = comment + "\n" + cor.group(1)
+                    comment = comment + cor.group(1) + "\n"
     f.close
     return (name, comment, startnode, nodes, groups)
 
@@ -95,7 +96,7 @@ def parseSolutionfile(file):
     return result
 
 
-def importTSP(callback):
+def importTSP(scale):
     """ Shows a filedialog to select a file to open and calls the callback
         with the parsed data  """
     # show a open-file-dialog
@@ -104,21 +105,47 @@ def importTSP(callback):
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
         name, comment, startnode, nodes, groups = parseTSPFile(filename.name)
-        callback(os.path.basename(filename.name), nodes, groups)
+
+        node_list = []
+        # If the nodes are not grouped, draw them in the currently
+        # selected color
+        if groups == []:
+            color = tsputil.colors[0]
+            for node in nodes:
+                new_node = Node(len(node_list),
+                                int(node[0] / scale),
+                                int(node[1] / scale), color)
+                node_list.append(new_node)
+        # if the nodes are grouped, draw nodes from the same group in the same
+        # color
+        else:
+            # iterate over groups
+            for (i, g) in enumerate(groups):
+                # iterate over node ids in the group
+                for e in g:
+                    # get node coordinates
+                    node = nodes[e - 1]
+                    new_node = Node(len(node_list),
+                                    int(node[0] / scale),
+                                    int(node[1] / scale),
+                                    tsputil.colors[i])
+                    node_list.append(new_node)
+        return(name, comment, startnode, node_list, groups)
 
 
-def exportTSP(nodes, scale, callback, preFilename=None):
+def exportTSP(nodes, scale, comment, preFilename=None):
     """ Exports the problem data in .tsp format  """
     filename = preFilename
+    if comment is None:
+        comment = "PUT PROBLEM DESCRIPTION HERE"
     # check if the function was called with a filename
     if filename is None:
         filename = asksaveasfile(defaultextension=".tsp")
-        print(filename)
     # check if the user did select a file
     if filename:
         f = open(filename.name, 'w')
         f.write("NAME : " + os.path.basename(filename.name) + "\n")
-        f.write("COMMENT : INSERT PROBLEM DESCRIPTION HERE" + "\n")
+        f.write("COMMENT : " + comment + "\n")
 
         groups = constructGroupsString(nodes)
         if not groups == "":
@@ -134,7 +161,7 @@ def exportTSP(nodes, scale, callback, preFilename=None):
                     " " + str(n.y * scale) + "\n")
         f.write("EOF")
         f.close()
-        callback(os.path.basename(filename.name))
+        return os.path.basename(filename.name)
 
 
 def exportTIKZ(nodes, scale):
