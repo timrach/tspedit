@@ -18,7 +18,7 @@ class FileInfoWidget(SidebarWidget):
             self.subFrame, text="Filename: Undefined")
         self._filenameLabel.pack(side=tk.TOP, anchor=tk.W)
         # COMMENT TEXT
-        self._commentText = tk.Text(self.subFrame, width=30, height=3)
+        self._commentText = tk.Text(self.subFrame, width=30, height=1)
         self._commentText.pack(side=tk.TOP, anchor=tk.W)
         self._commentText.insert(0.0, 'TYPE PROBLEM DESCRIPTION HERE')
         self._commentText.bind("<Return>", self.onTextChange)
