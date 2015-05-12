@@ -67,7 +67,7 @@ class EditWidget(SidebarWidget):
             # remove node from nodes array
             index = int(selection[0])
             nodes[index].start = not nodes[index].start
-            self._datacontroller.commitChange('nodes', nodes)
+            self._datacontroller.commitChange('startnode', nodes)
 
     def _deleteButtonClicked(self):
         nodes = self._datacontroller.getData('nodes')
@@ -96,7 +96,7 @@ class EditWidget(SidebarWidget):
         self._datacontroller.commitChange('nodecolor', self._colorVar.get())
 
     def dataUpdate(self, key, data):
-        if key is 'nodes':
+        if key is 'nodes' or key is 'startnode':
             # remember selection
             selection = self._nodeListBox.curselection()
             # clear data

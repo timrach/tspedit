@@ -5,6 +5,7 @@ except ImportError:
     # for Python3
     import tkinter as tk
 from Node import *
+import tsputil
 import math
 import copy
 
@@ -19,7 +20,7 @@ class ResizingCanvas(tk.Canvas):
         self.configure(highlightthickness=0)
 
         """ Public vars """
-        self.keywords = ['nodes', 'path', 'selectedNode']
+        self.keywords = ['nodes', 'startnode', 'path', 'selectedNode']
 
         """ Private vars """
         self._parent = parent
@@ -125,7 +126,7 @@ class ResizingCanvas(tk.Canvas):
         the data to the nodes and points arrays"""
         index = int(node.y * self.cols + node.x)
         point = self.circle(node.x, node.y, 0.5, fill=node.color, tags="node",
-                            activeoutline="Orange", activewidth=3)
+                            activeoutline=tsputil.resColors[0], activewidth=3)
         # register point for the click event
         self.tag_bind(point, "<Button-1>", lambda e: self.nodeSelected(index))
         self._points[index] = point
@@ -154,8 +155,14 @@ class ResizingCanvas(tk.Canvas):
     def drawSelectionIndicator(self, index):
         """ Draws a red ring around the selected point """
         coords = self.indToCoord(index)
-        self.circle(coords[0], coords[1], 0.5, outline="#f44", width=3,
-                    fill="", tags="selector")
+        self.circle(coords[0], coords[1], 0.5, outline=tsputil.resColors[1], 
+                    width=3, fill="", tags="selector")
+
+    def drawStartIndicator(self, index):
+        """ Draws a blue ring around the selected point """
+        coords = self.indToCoord(index)
+        self.circle(coords[0], coords[1], 0.6, outline=tsputil.resColors[2], 
+                    width=5, fill="", tags="startnode")
 
     def drawCenterOfMass(self):
         """ Draws a small blue ring at the center of mass position """
@@ -264,3 +271,10 @@ class ResizingCanvas(tk.Canvas):
                 end = self._nodes[int(data[c + 1])]
                 self.line(start.x, start.y, end.x, end.y)
             self.tag_raise("node")
+        elif key is 'startnode':
+            if data:
+                for node in data:
+                    if node.start:
+                        index = int(node.y * self.cols + node.x)
+                        self.drawStartIndicator(index)
+
