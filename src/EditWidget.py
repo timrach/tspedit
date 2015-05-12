@@ -61,7 +61,7 @@ class EditWidget(SidebarWidget):
         selection = self._nodeListBox.curselection()
         if len(selection):
             # remove node from nodes array
-            index = selection[0]
+            index = int(selection[0])
             del nodes[index]
             tsputil.reindexNodes(nodes)
             self._datacontroller.commitChange('nodes', nodes)
@@ -78,7 +78,7 @@ class EditWidget(SidebarWidget):
 
     def _onListBoxSelect(self, *args):
         nodes = self._datacontroller.getData('nodes')
-        index = self._nodeListBox.curselection()[0]
+        index = int(self._nodeListBox.curselection()[0])
         self._datacontroller.commitChange('selectedNode', nodes[index])
 
     def _onDropdownSelect(self, *args):

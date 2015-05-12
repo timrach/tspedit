@@ -1,5 +1,11 @@
-import tkinter as tk
-import tkinter.ttk as ttk
+try:
+	# for Python2
+	import Tkinter as tk
+	import ttk
+except ImportError:
+	# for Python3
+	import tkinter as tk
+	import tkinter.ttk as ttk
 
 
 class SidebarWidget(tk.Frame):

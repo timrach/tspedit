@@ -1,4 +1,9 @@
-import tkinter as tk
+try:
+    # for Python2
+    import Tkinter as tk
+except ImportError:
+    # for Python3
+    import tkinter as tk
 from Node import *
 import math
 import copy
@@ -30,7 +35,7 @@ class ResizingCanvas(tk.Canvas):
         self.padding = 5
         self.rows = math.floor(self._height / self.fieldsize)
         self.cols = math.floor(self.width / self.fieldsize)
-        self._points = [None for i in range(0, self.rows * self.cols)]
+        self._points = [None for i in range(0, int(self.rows * self.cols))]
         self._nodes = copy.copy(self._datacontroller.getData('nodes'))
 
         """ register the canvas area for click and hover events.
@@ -65,13 +70,13 @@ class ResizingCanvas(tk.Canvas):
         """Draws the grid for the node positions on the canvas
         as gray lines."""
         # draw vertical lines
-        for x in range(0, self.cols + 1):
+        for x in range(0, int(self.cols + 1)):
             xcoord = x * self.fieldsize
             self.create_line(
                 xcoord, 0, xcoord, self.rows * self.fieldsize,
                 fill="#ddd", tags="grid")
         # draw horizontal lines
-        for y in range(0, self.rows + 1):
+        for y in range(0, int(self.rows + 1)):
             ycoord = y * self.fieldsize
             self.create_line(
                 0, ycoord, self.cols * self.fieldsize, ycoord,
@@ -107,7 +112,7 @@ class ResizingCanvas(tk.Canvas):
             (event.y - self.padding) / (self.fieldsize * self.hscale))
         # only do something if the clicked position is within bounds
         if(q < self.cols and r < self.rows and q >= 0 and r >= 0):
-            point = self._points[r * self.cols + q]
+            point = self._points[int(r * self.cols + q)]
             # if there is no node yet, add one
             if point is None:
                 new_nodes = self._datacontroller.getData('nodes')
@@ -118,7 +123,7 @@ class ResizingCanvas(tk.Canvas):
     def addNode(self, node):
         """ draws a point on the specified position on the canvas and adds
         the data to the nodes and points arrays"""
-        index = node.y * self.cols + node.x
+        index = int(node.y * self.cols + node.x)
         point = self.circle(node.x, node.y, 0.5, fill=node.color, tags="node",
                             activeoutline="Orange", activewidth=3)
         # register point for the click event
@@ -210,11 +215,11 @@ class ResizingCanvas(tk.Canvas):
 
     def deleteNode(self, node):
         """ Delete the point at cell x,y"""
-        ind = node.y * self.cols + node.x
+        ind = int(node.y * self.cols + node.x)
         if ind == self.selectedNode:
             self.nodeSelected(ind)
         self.delete(self._points[ind])
-        self._points[node.y * self.cols + node.x] = None
+        self._points[ind] = None
 
     def setCom(self, value):
         "Dis-/Enables the drawing of the center of mass"
@@ -249,7 +254,7 @@ class ResizingCanvas(tk.Canvas):
             self.selectedNode = None
             if data:
                 # set new selection
-                index = data.y * self.cols + data.x
+                index = int(data.y * self.cols + data.x)
                 self.selectedNode = index
                 self.drawSelectionIndicator(index)
         elif key is 'path':

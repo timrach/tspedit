@@ -1,9 +1,14 @@
 import re
 import ast
 import os
-from tkinter.filedialog import asksaveasfile, askopenfile
-from Node import *
 import tsputil
+from Node import *
+try:
+    # for Python2
+    from tkFileDialog import asksaveasfile, askopenfile
+except ImportError:
+    # for Python3
+    from tkinter.filedialog import asksaveasfile, askopenfile
 
 
 def parseTSPFile(file):
@@ -42,8 +47,8 @@ def parseTSPFile(file):
                 name = nar.group(1)
             # Match coordinates
             if nr:
-                x = int(nr.group(2))
-                y = int(nr.group(3))
+                x = int(float(nr.group(2)))
+                y = int(float(nr.group(3)))
                 nodes.append([x, y])
             # Match Comments
             if cor:

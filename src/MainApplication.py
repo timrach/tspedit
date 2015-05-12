@@ -1,6 +1,11 @@
 #!/usr/local/bin/python3
 
-import tkinter as tk
+try:
+    # for Python2
+    import Tkinter as tk
+except ImportError:
+    # for Python3
+    import tkinter as tk
 import tspio
 from SidebarFrame import *
 from CanvasFrame import *

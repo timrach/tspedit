@@ -3,4 +3,4 @@ DIR="$( dirname "$SOURCE" )"
 
 cd "$DIR/src"
 
-python3 "main.py"
+python "main.py"
