@@ -24,7 +24,7 @@ class FileInfoWidget(SidebarWidget):
         self._commentText.bind("<Return>", self.onTextChange)
         self._commentText.bind("<FocusOut>", self.onTextChange)
         # STARTNODE LABEL
-        self._startnodeLabel = tk.Label(self.subFrame, text="Startnode: ---")
+        self._startnodeLabel = tk.Label(self.subFrame, text="Startnodes: []")
         self._startnodeLabel.pack(side=tk.TOP, anchor=tk.W)
         # GROUPS LABEL
         self._groupsLabel = tk.Label(self.subFrame, text="Groups: None")
@@ -35,6 +35,7 @@ class FileInfoWidget(SidebarWidget):
 
         self._datacontroller.registerData('fileinfo', {'filename': None,
                                                        'comment': None})
+        self._datacontroller.registerData('startnode', [])
         self._datacontroller.registerObserver(self, self.keywords)
 
     def onTextChange(self, event):
@@ -53,7 +54,7 @@ class FileInfoWidget(SidebarWidget):
                 for node in data:
                     if node.start:
                         res.append(node.id)
-                self._startnodeLabel.config(text="Startnode: " + str(res))
+                self._startnodeLabel.config(text="Startnodes: " + str(res))
         elif key is 'nodes':
             self._dimensionLabel.config(text="Dimension: " + str(len(data)))
             self._groupsLabel.config(

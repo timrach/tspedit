@@ -20,6 +20,7 @@ class IOModule:
         self._datacontroller.commitChange('nodes', [])
         # TODO: COMMIT STARTNODE INFO
         self._datacontroller.commitChange('nodes', ns)
+        self._datacontroller.commitChange('startnode', ns)
 
     def exportTSP(self, event=None):
         """ Export the loaded problem via the IO module in .tsp format"""
