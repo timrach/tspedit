@@ -2,10 +2,10 @@ import math
 
 
 colors = ["Black", "Orange", "Cyan",
-          "Magenta", "Yellow", "Gray", "White", "Brown",
-          "Pink", "Purple", "Violet"]
+          "Magenta", "Yellow", "Blue", "White", "Brown",
+          "Pink", "Gray", "Violet"]
 
-resColors = ["Red", "Green", "Blue"]
+resColors = ["Red", "Green", "Purple"]
 
 
 def reindexNodes(nodes):
