@@ -67,7 +67,6 @@ class EditWidget(SidebarWidget):
             # remove node from nodes array
             index = int(selection[0])
             nodes[index].start = not nodes[index].start
-            print(nodes[index].start)
             self._datacontroller.commitChange('nodes', nodes)
 
     def _deleteButtonClicked(self):
