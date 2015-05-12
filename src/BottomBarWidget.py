@@ -43,6 +43,7 @@ class BottomBarWidget(tk.Frame):
 
     def dataUpdate(self, key, data):
         if key is 'mouseGridPosition':
-            (q, r) = data
-            self.position_label.config(
-                text=("( X:" + str(q) + " , " + "Y:" + str(r)) + ")")
+            if data:
+                (q, r) = data
+                self.position_label.config(
+                    text=("( X:" + str(q) + " , " + "Y:" + str(r)) + ")")
