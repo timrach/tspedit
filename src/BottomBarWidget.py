@@ -36,8 +36,8 @@ class BottomBarWidget(tk.Frame):
                                              onvalue=1, offvalue=0)
 
         self.position_label.pack(side=tk.RIGHT)
-        #self.comCheckButton.pack(side=tk.LEFT)
-        #self.cogCheckButton.pack(side=tk.LEFT)
+        # self.comCheckButton.pack(side=tk.LEFT)
+        # self.cogCheckButton.pack(side=tk.LEFT)
 
         self._datacontroller.registerObserver(self, self.keywords)
 

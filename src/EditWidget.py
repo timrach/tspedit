@@ -52,13 +52,13 @@ class EditWidget(SidebarWidget):
         self._deleteButton = tk.Button(self._buttonFrame, text="Delete",
                                        command=self._deleteButtonClicked)
         self._deleteButton.pack(side=tk.LEFT)
-        self._startnodeButton = tk.Button(self._buttonFrame, text="Toggle Start",
-                                       command=self._startNodeButtonClicked)
+        self._startnodeButton = tk.Button(self._buttonFrame,
+                                          text="Toggle Start",
+                                          command=self._startNodeButtonClicked)
         self._startnodeButton.pack(side=tk.LEFT)
 
         self._datacontroller.registerData('nodecolor', tsputil.colors[0])
         self._datacontroller.registerObserver(self, self.keywords)
-
 
     def _startNodeButtonClicked(self):
         nodes = self._datacontroller.getData('nodes')
@@ -69,7 +69,6 @@ class EditWidget(SidebarWidget):
             nodes[index].start = not nodes[index].start
             print(nodes[index].start)
             self._datacontroller.commitChange('nodes', nodes)
-
 
     def _deleteButtonClicked(self):
         nodes = self._datacontroller.getData('nodes')

@@ -4,6 +4,7 @@ try:
 except ImportError:
     # for Python3
     import tkinter as tk
+
 from ResizingCanvas import *
 from BottomBarWidget import *
 

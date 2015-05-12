@@ -22,7 +22,9 @@ class SidebarFrame(tk.Frame):
 
         # Hack: Label to keep the frame at a minimum width
         ttk.Label(
-            self, text="-------------------------------------------").pack(side=tk.TOP, fill=tk.X)
+            self,
+            text="-------------------------------------------").pack(
+            side=tk.TOP, fill=tk.X)
 
         # File info widget
         self.fileInfo = FileInfoWidget(self, datacontroller)

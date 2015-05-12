@@ -33,7 +33,8 @@ class SolverModule:
             if sysos == "Darwin":
                 subprocess.call([directory + "/../bin/concorde-osx", filename])
             elif sysos == "Linux":
-                subprocess.call([directory + "/../bin/concorde-fedora", filename])
+                subprocess.call(
+                    [directory + "/../bin/concorde-fedora", filename])
             elif sysos == "Windows":
                 return  # this function is not supported under windows yet
             else:
@@ -57,7 +58,7 @@ class SolverModule:
             self._datacontroller.commitChange('path', result)
 
     def convexHull(self):
-        """ Returns all nodes defining the convex_hull or lying on its edge. """
+        """ Returns all nodes defining the convex_hull or lying on its edge."""
         nodes = self._datacontroller.getData('nodes')
         if len(nodes):
             points = []
