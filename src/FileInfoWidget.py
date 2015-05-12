@@ -48,7 +48,12 @@ class FileInfoWidget(SidebarWidget):
 
     def dataUpdate(self, key, data):
         if key is 'startnode':
-            self._startnodeLabel.config(text="Startnode: " + str(data))
+            if data:
+                res = []
+                for node in data:
+                    if node.start:
+                        res.append(node.id)
+                self._startnodeLabel.config(text="Startnode: " + str(res))
         elif key is 'nodes':
             self._dimensionLabel.config(text="Dimension: " + str(len(data)))
             self._groupsLabel.config(
