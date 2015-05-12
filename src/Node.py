@@ -9,6 +9,7 @@ class Node:
         self.x = x
         self.y = y
         self.color = color
+        self.start = False
 
     def toString(self):
         """ Construct a string with the node informations """
