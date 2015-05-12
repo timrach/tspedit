@@ -74,8 +74,6 @@ class EditWidget(SidebarWidget):
                 self._datacontroller.commitChange(
                     'selectedNode', nodes[newindex])
 
-        pass
-
     def _onListBoxSelect(self, *args):
         nodes = self._datacontroller.getData('nodes')
         index = int(self._nodeListBox.curselection()[0])
