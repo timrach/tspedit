@@ -20,5 +20,8 @@ class Node:
         if(self.y < 10):
             ydelim = "  "
 
-        return (str(self.id) + "\t X:" + xdelim + str(self.x)
+        result =  (str(self.id) + "\t X:" + xdelim + str(self.x)
                 + " \t Y:" + ydelim + str(self.y))
+        if self.start:
+            result += "\t Start"
+        return result
