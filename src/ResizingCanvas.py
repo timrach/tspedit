@@ -27,7 +27,7 @@ class ResizingCanvas(tk.Canvas):
         self._datacontroller = datacontroller
         self._height = self.winfo_reqheight()
         self.width = self.winfo_reqwidth()
-        self.selectedNode = None
+        self._selectedNode = None
         self.com = 1
         self.cog = 1
         self.hscale = 1.0
@@ -38,6 +38,7 @@ class ResizingCanvas(tk.Canvas):
         self.cols = math.floor(self.width / self.fieldsize)
         self._points = [None for i in range(0, int(self.rows * self.cols))]
         self._nodes = copy.copy(self._datacontroller.getData('nodes'))
+        self._tags = ["selector", "node", "startnode", "path_line", "cog", "com"]
 
         """ register the canvas area for click and hover events.
             If the user clicks on the canvas call the canvas_clicked method
@@ -141,8 +142,8 @@ class ResizingCanvas(tk.Canvas):
         """ Selects the point at the index position.
         If the point is already selected, it is deselected.
         In both cases the event is passed to the other modules"""
-        if self.selectedNode == index:
-            self.selectedNode = None
+        if self._selectedNode == index:
+            self._selectedNode = None
             self._datacontroller.commitChange('selectedNode', None)
         else:
             # find node in nodes array
@@ -223,7 +224,7 @@ class ResizingCanvas(tk.Canvas):
     def deleteNode(self, node):
         """ Delete the point at cell x,y"""
         ind = int(node.y * self.cols + node.x)
-        if ind == self.selectedNode:
+        if ind == self._selectedNode:
             self.nodeSelected(ind)
         self.delete(self._points[ind])
         self._points[ind] = None
@@ -258,11 +259,11 @@ class ResizingCanvas(tk.Canvas):
         elif key is 'selectedNode':
             # clear old selection
             self.delete("selector")
-            self.selectedNode = None
+            self._selectedNode = None
             if data:
                 # set new selection
                 index = int(data.y * self.cols + data.x)
-                self.selectedNode = index
+                self._selectedNode = index
                 self.drawSelectionIndicator(index)
         elif key is 'path':
             self.delete("path_line")
@@ -272,6 +273,7 @@ class ResizingCanvas(tk.Canvas):
                 self.line(start.x, start.y, end.x, end.y)
             self.tag_raise("node")
         elif key is 'startnode':
+            self.delete("startnode")
             if data:
                 for node in data:
                     if node.start:
