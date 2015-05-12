@@ -7,6 +7,7 @@ except ImportError:
     # for Python3
     import tkinter as tk
 import tspio
+import copy
 from SidebarFrame import *
 from CanvasFrame import *
 from IOModule import *
@@ -30,6 +31,8 @@ class MainApplication(tk.Frame):
            self._data = {'key1' : data1, 'key2' : data2}"""
         self._data = {}
 
+        self._nullvalues = {}
+
         """The observer dictionary describing bindings of observers to data
            self._observers = {'key1' : [observer1,observer2],
                              'key2' : [observer3],
@@ -45,7 +48,8 @@ class MainApplication(tk.Frame):
     def registerData(self, key, value):
         """Adds a new entry to the data dictionary """
         if key not in self._data:
-            self._data.update({key: value})
+            self._nullvalues.update({key: copy.deepcopy(value)})
+            self._data.update({key: copy.deepcopy(value)})
             self._observers.update({key: []})
 
     def unregisterData(self, key):
@@ -75,9 +79,9 @@ class MainApplication(tk.Frame):
 
     def clear(self, event=None):
         """ Clears all problem data from the program and resets the UI """
-        self._data = {}
-        for key in self._observers:
-            self._observers[key].clear()
+        self._nullvalues['nodes'] = []
+        for key in self._data:
+            self.commitChange(key, self._nullvalues[key])           
 
     def getData(self, key):
         return self._data[key]
@@ -103,6 +107,10 @@ class MainApplication(tk.Frame):
         self._parent.config(menu=menubar)
 
         filemenu = tk.Menu(menubar, tearoff=0)
+        filemenu.add_command(label="New file",
+                             command=self.clear,
+                             accelerator="Ctrl+N")
+        self.bind_all("<Control-n>", self.clear)
         filemenu.add_command(label="Import .tsp",
                              command=self.iomodule.importTSP,
                              accelerator="Ctrl+I")
@@ -111,6 +119,6 @@ class MainApplication(tk.Frame):
                              command=self.iomodule.exportTSP,
                              accelerator="Ctrl+E")
         self.bind_all("<Control-e>", self.iomodule.exportTSP)
-        filemenu.add_separator()
+        
 
         menubar.add_cascade(label="File", menu=filemenu)
