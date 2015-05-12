@@ -91,6 +91,17 @@ def constructGroupsString(nodes):
         return str(result)
 
 
+def constructStartnodesString(nodes):
+    res = []
+    for node in nodes:
+        if node.start:
+            res.append(node.id)
+    if len(res):
+        return str(res)
+    else:
+        return ""
+
+
 def parseSolutionfile(file):
     """ Returns the concatenated lines 1 to END """
     result = ""
@@ -155,6 +166,10 @@ def exportTSP(nodes, scale, comment, preFilename=None):
         groups = constructGroupsString(nodes)
         if not groups == "":
             f.write("COMMENT : CLUSTERS : " + groups + "\n")
+
+        startnodes = constructStartnodesString(nodes)
+        if not startnodes == "":
+            f.write("COMMENT : STARTNODES : " + startnodes + "\n")
 
         f.write("TYPE: TSP" + "\n")
         f.write("DIMENSION: " + str(len(nodes)) + "\n")
