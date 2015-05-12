@@ -19,8 +19,9 @@ def parseTSPFile(file):
     name_regex = re.compile("NAME : (.*)")
     # Parse comment
     comment_regex = re.compile("COMMENT : (.*)")
-    # Parse startnode
+    # Parse single startnode
     start_regex = re.compile("COMMENT : STARTNODE : ([0-9])+")
+    start_regex2 = re.compile("COMMENT : STARTNODES : (.*)")
     # Parse nodes
     node_regex = re.compile("([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)",
                             re.MULTILINE)
@@ -29,7 +30,7 @@ def parseTSPFile(file):
 
     name = "No Name"
     comment = ""
-    startnode = None
+    startnodes = []
     nodes = []
     groups = []
 
@@ -42,6 +43,7 @@ def parseTSPFile(file):
         clr = re.match(cluster_regex, lines[l])
         if len(lines[l]):
             sr = re.match(start_regex, lines[l])
+            sr2 = re.match(start_regex2, lines[l])
             # Match Filename
             if nar:
                 name = nar.group(1)
@@ -58,11 +60,14 @@ def parseTSPFile(file):
                     groups = groups.replace(" ", "")
                     groups = ast.literal_eval(groups)
                 elif sr:
-                    startnode = sr.group(1)
+                    startnodes = [int(sr.group(1))]
+                elif sr2:
+                    startnodes = sr2.group(1)
+                    startnodes = ast.literal_eval(startnodes)
                 else:
                     comment = comment + cor.group(1) + "\n"
     f.close
-    return (name, comment, startnode, nodes, groups)
+    return (name, comment, startnodes, nodes, groups)
 
 
 def getGroups(nodes):
@@ -120,7 +125,7 @@ def importTSP(scale):
     # if the user selected a file, delete old data,parse the file and
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
-        name, comment, startnode, nodes, groups = parseTSPFile(filename.name)
+        name, comment, startnodes, nodes, groups = parseTSPFile(filename.name)
 
         node_list = []
         # If the nodes are not grouped, draw them in the currently
@@ -145,8 +150,10 @@ def importTSP(scale):
                                     int(node[0] / scale),
                                     int(node[1] / scale),
                                     tsputil.colors[i])
+                    if new_node.id in startnodes:
+                        new_node.start = True
                     node_list.append(new_node)
-        return(name, comment, startnode, node_list, groups)
+        return(name, comment, startnodes, node_list, groups)
 
 
 def exportTSP(nodes, scale, comment, preFilename=None):
