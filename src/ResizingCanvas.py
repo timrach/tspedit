@@ -17,7 +17,7 @@ class ResizingCanvas(tk.Canvas):
     def __init__(self, parent, datacontroller, **kwargs):
         tk.Canvas.__init__(self, parent, **kwargs)
 
-        self.configure(highlightthickness=0)
+        self.configure(highlightthickness=0, background="white")
 
         """ Public vars """
         self.keywords = ['nodes', 'startnode', 'path', 'selectedNode']
