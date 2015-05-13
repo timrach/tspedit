@@ -15,11 +15,12 @@ class PathWidget(SidebarWidget):
         self._datacontroller = datacontroller
         self._solverModule = SolverModule(self, datacontroller)
 
-        self._solvers = ['None', 'Optimal Tour', 'Convex Hull']
+        self._solvers = ['None', 'Optimal Tour', 'Convex Hull', 'Convex Human Model' ]
 
         self._methods = {'None': self._solverModule.emptySolution,
                          'Optimal Tour': self._solverModule.concorde,
-                         'Convex Hull': self._solverModule.convexHull}
+                         'Convex Hull': self._solverModule.convexHull,
+                         'Convex Human Model': self._solverModule.convexHullModel}
 
         """ UI """
         self._solverContainer = tk.Frame(self.subFrame)
