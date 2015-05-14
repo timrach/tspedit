@@ -267,10 +267,12 @@ class ResizingCanvas(tk.Canvas):
                 self.drawSelectionIndicator(index)
         elif key is 'path':
             self.delete("path_line")
-            for c in range(0, len(data) - 1):
-                start = self._nodes[int(data[c])]
-                end = self._nodes[int(data[c + 1])]
-                self.line(start.x, start.y, end.x, end.y)
+            if 'Tour' in data:
+                tour = data['Tour']
+                for c in range(0, len(tour) - 1):
+                    start = self._nodes[int(tour[c])]
+                    end = self._nodes[int(tour[c + 1])]
+                    self.line(start.x, start.y, end.x, end.y)
             self.tag_raise("node")
         elif key is 'startnode':
             self.delete("startnode")

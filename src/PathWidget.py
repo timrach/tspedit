@@ -47,7 +47,7 @@ class PathWidget(SidebarWidget):
             self._infoLabelFrame, orient=tk.VERTICAL)
         self._infoListBox = tk.Listbox(
             self._infoLabelFrame, bd=0, yscrollcommand=self._scrollbar.set,
-            selectmode=tk.EXTENDED, width=25, height=2)
+            selectmode=tk.EXTENDED, width=25, height=5)
         self._infoListBox.pack(side=tk.LEFT, anchor=tk.W)
         self._scrollbar.config(command=self._infoListBox.yview)
         # SCROLLBAR NOT NEEDED YET
@@ -62,11 +62,6 @@ class PathWidget(SidebarWidget):
 
     def dataUpdate(self, key, data):
         if key is 'path':
-            scale = self._datacontroller.getData('scale')
-            nodes = self._datacontroller.getData('nodes')
-
             self._infoListBox.delete(0, tk.END)
-            self._infoListBox.insert(0, "Tour: " + str(data))
-            self._infoListBox.insert(1, "Tourlength: " +
-                                     str(tsputil.getPathLength(nodes, scale,
-                                                               data)))
+            for (index, key) in enumerate(data):
+                self._infoListBox.insert(index, str(key) + ": " + str(data[key]))

@@ -14,10 +14,10 @@ class SolverModule:
         self._parent = parent
         self._datacontroller = datacontroller
 
-        self._datacontroller.registerData('path', [])
+        self._datacontroller.registerData('path', {})
 
     def emptySolution(self):
-        self._datacontroller.commitChange('path', [])
+        self._datacontroller.commitChange('path', {})
 
     def concorde(self):
         nodes = self._datacontroller.getData('nodes')
@@ -53,10 +53,11 @@ class SolverModule:
                     if os.path.isfile(fileToDelete):
                         os.remove(fileToDelete)
 
-            result = solution.split()
-            result = list(map(int, result))
-            result.append(result[0])
-
+            tour = solution.split()
+            tour = list(map(int, tour))
+            tour.append(tour[0])
+            result = {'Tour' : tour,
+                      'Tourlength' : tsputil.getPathLength(nodes, scale, tour)}
             self._datacontroller.commitChange('path', result)
 
     def convexHullHelper(self, nodes):
@@ -83,8 +84,13 @@ class SolverModule:
     def convexHull(self):
         """ Returns all nodes defining the convex_hull or lying on its edge."""
         nodes = self._datacontroller.getData('nodes')
-        result = self.convexHullHelper(nodes)
-        if result:
+        scale = self._datacontroller.getData('scale')
+        hull = self.convexHullHelper(nodes)
+        if hull:
+            result = {'Tour' : hull,
+                      'Tourlength' : tsputil.getPathLength(nodes, scale, hull),
+                      'Start' : 'Most Top Left Node',
+                      'Direction' : 'Clockwise'}
             self._datacontroller.commitChange('path', result)
 
 
@@ -166,9 +172,18 @@ class SolverModule:
                 5 until a complete tour is obtained"""
                 hull.insert(hull.index(adjacent_node),interior_node)
                 adjacent_node = interior_node
+            dirstring = "Clockwise"
             if direction == -1:
                 hull.reverse()
-            self._datacontroller.commitChange('path', hull)
+                dirstring = "Counter Clockwise"
+            if (_direction == 'random'):
+                dirstring += " (random)"
+            scale = self._datacontroller.getData('scale')
+            result = {'Tour' : hull,
+                      'Tourlength' : tsputil.getPathLength(nodes, scale, hull),
+                      'Start' : str(_start),
+                      'Direction' : dirstring}
+            self._datacontroller.commitChange('path', result)
 
 
     def findClosestInteriorNode(self, current_arc, hull, nodes):
