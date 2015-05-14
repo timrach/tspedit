@@ -93,8 +93,8 @@ class MainApplication(tk.Frame):
     def _setupGui(self):
         self.configure(padx=10, pady=10)
 
-        self.sidebar = SidebarFrame(self, self)
-        self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.sidebar = SidebarFrame(self, self, width=50)
+        self.sidebar.pack(side=tk.LEFT, fill=tk.Y, expand=False)
 
         self.canvas = CanvasFrame(self, self)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
