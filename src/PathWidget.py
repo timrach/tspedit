@@ -9,7 +9,7 @@ class PathWidget(SidebarWidget):
         SidebarWidget.__init__(self, parent, text='Path', **options)
 
         """ Public vars """
-        self.keywords = ['path']
+        self.keywords = ['path', 'pathsteps']
 
         """ Private vars """
         self._datacontroller = datacontroller
@@ -21,6 +21,8 @@ class PathWidget(SidebarWidget):
                          'Optimal Tour': self._solverModule.concorde,
                          'Convex Hull': self._solverModule.convexHull,
                          'Convex Human Model': self._solverModule.convexHullModel}
+        self._step = 0
+        self._pathSteps = []
 
         """ UI """
         self._solverContainer = tk.Frame(self.subFrame)
@@ -52,6 +54,28 @@ class PathWidget(SidebarWidget):
         self._scrollbar.config(command=self._infoListBox.xview)
         self._scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
+        #Stepper Controls
+        self._stepperFrame = tk.Frame(self.subFrame)
+        self._stepperFrame.pack(side=tk.BOTTOM, fill=tk.X, anchor=tk.W)
+
+        self._firstStepButton = tk.Button(self._stepperFrame, text="<<",
+                                       command=lambda: self._doStep("first"),
+                                       state=tk.DISABLED)
+        self._firstStepButton.pack(side=tk.LEFT)
+        self._prevStepButton = tk.Button(self._stepperFrame, text="<",
+                                       command=lambda: self._doStep("prev"),
+                                       state=tk.DISABLED)
+        self._prevStepButton.pack(side=tk.LEFT)
+
+        self._lastStepButton = tk.Button(self._stepperFrame, text=">>",
+                                       command=lambda: self._doStep("last"),
+                                       state=tk.DISABLED)
+        self._lastStepButton.pack(side=tk.RIGHT)
+        self._nextStepButton = tk.Button(self._stepperFrame, text=">",
+                                       command=lambda: self._doStep("next"),
+                                       state=tk.DISABLED)
+        self._nextStepButton.pack(side=tk.RIGHT)
+
         self._datacontroller.registerObserver(self, self.keywords)
 
     def _onDropdownSelect(self, *args):
@@ -59,8 +83,49 @@ class PathWidget(SidebarWidget):
         self._methods[method]()
         pass
 
+
+    def _doStep(self, key):
+        if key is 'first':
+            self._step = 0
+        elif key is 'prev':
+            self._step = max(0, self._step - 1)
+        elif key is 'next':
+            self._step = min(len(self._pathSteps) - 1, self._step + 1)
+        elif key is 'last':
+            self._step = len(self._pathSteps) - 1
+
+        if self._step > 0:
+            self._firstStepButton.config(state=tk.NORMAL)
+            self._prevStepButton.config(state=tk.NORMAL)
+        else:
+            self._firstStepButton.config(state=tk.DISABLED)
+            self._prevStepButton.config(state=tk.DISABLED)
+
+        if self._step < len(self._pathSteps) - 1:
+            self._lastStepButton.config(state=tk.NORMAL)
+            self._nextStepButton.config(state=tk.NORMAL)
+        else:
+            self._lastStepButton.config(state=tk.DISABLED)
+            self._nextStepButton.config(state=tk.DISABLED)
+
+        self._datacontroller.commitChange('path', self._pathSteps[self._step])
+
+
     def dataUpdate(self, key, data):
         if key is 'path':
             self._infoListBox.delete(0, tk.END)
-            for (index, key) in enumerate(data):
-                self._infoListBox.insert(index, str(key) + ": " + str(data[key]))
+            if data:
+                for (index, key) in enumerate(data):
+                    self._infoListBox.insert(index, str(key) + ": " + str(data[key]))
+        elif key is 'pathsteps':
+            self._pathSteps = data
+            self._step = len(data) - 1
+            if data:
+                self._firstStepButton.config(state=tk.NORMAL)
+                self._prevStepButton.config(state=tk.NORMAL)
+            else:
+                self._firstStepButton.config(state=tk.DISABLED)
+                self._prevStepButton.config(state=tk.DISABLED)
+                self._lastStepButton.config(state=tk.DISABLED)
+                self._nextStepButton.config(state=tk.DISABLED)
+

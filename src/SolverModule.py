@@ -15,8 +15,10 @@ class SolverModule:
         self._datacontroller = datacontroller
 
         self._datacontroller.registerData('path', {})
+        self._datacontroller.registerData('pathsteps', [])
 
     def emptySolution(self):
+        self._datacontroller.commitChange('pathsteps', [])
         self._datacontroller.commitChange('path', {})
 
     def concorde(self):
@@ -58,6 +60,9 @@ class SolverModule:
             tour.append(tour[0])
             result = {'Tour': tour,
                       'Tourlength': tsputil.getPathLength(nodes, scale, tour)}
+            steps = [{'Tour': [], 'Tourlength': 0},result]
+
+            self._datacontroller.commitChange('pathsteps', steps)
             self._datacontroller.commitChange('path', result)
 
     def convexHullHelper(self, nodes):
@@ -85,7 +90,10 @@ class SolverModule:
             self._datacontroller.commitChange('path', result)
 
     def convexHullModel(self, _start='random', _direction='random'):
+        steps = [{'Tour': [], 'Tourlength': 0}]
         nodes = self._datacontroller.getData('nodes')
+        scale = self._datacontroller.getData('scale')
+
         if nodes:
             """Step 1: Sketch the connections between adjacent boundary
                        points of the convex hull."""
@@ -110,6 +118,11 @@ class SolverModule:
             if not _start is 'random':
                 start = _start
 
+            steps.append({'Tour': copy.deepcopy(hull),
+                          'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                          'Start': str(_start),
+                          'Direction': dirstring})
+
             """ Step 3: If the starting point is on the boundary, 
             the starting node is the current node. """
             if start in hull:
@@ -132,6 +145,10 @@ class SolverModule:
                 This node becomes the current node."""
                 # insert startnode into hull
                 hull.insert(hull.index(closest_arc[0]) + 1, start)
+                steps.append({'Tour': copy.deepcopy(hull),
+                              'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                              'Start': str(_start),
+                              'Direction': dirstring})
                 # update current arc nodes
                 current_node = start
                 adjacent_node = hull[hull.index(closest_arc[1])]
@@ -162,13 +179,13 @@ class SolverModule:
                 5 until a complete tour is obtained"""
                 hull.insert(hull.index(current_node) + 1, interior_node)
                 adjacent_node = interior_node
-            # construct resulting data
-            scale = self._datacontroller.getData('scale')
-            result = {'Tour': hull,
-                      'Tourlength': tsputil.getPathLength(nodes, scale, hull),
-                      'Start': str(_start),
-                      'Direction': dirstring}
-            self._datacontroller.commitChange('path', result)
+                steps.append({'Tour': copy.deepcopy(hull),
+                              'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                              'Start': str(_start),
+                              'Direction': dirstring})
+
+            self._datacontroller.commitChange('pathsteps', steps)
+            self._datacontroller.commitChange('path', steps[-1])
 
     def findClosestInteriorNode(self, current_arc, hull, nodes):
         lengths = [float("inf") for x in range(len(nodes))]
