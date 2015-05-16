@@ -50,7 +50,6 @@ class PathWidget(SidebarWidget):
             selectmode=tk.EXTENDED, width=25, height=5)
         self._infoListBox.pack(side=tk.TOP, anchor=tk.W, expand=1, fill=tk.X)
         self._scrollbar.config(command=self._infoListBox.xview)
-        # SCROLLBAR NOT NEEDED YET
         self._scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
         self._datacontroller.registerObserver(self, self.keywords)
