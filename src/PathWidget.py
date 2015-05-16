@@ -44,14 +44,14 @@ class PathWidget(SidebarWidget):
             self.subFrame, text="Info", padx=5, pady=5)
         self._infoLabelFrame.pack(side=tk.TOP, fill=tk.X, anchor=tk.W)
         self._scrollbar = tk.Scrollbar(
-            self._infoLabelFrame, orient=tk.VERTICAL)
+            self._infoLabelFrame, orient=tk.HORIZONTAL)
         self._infoListBox = tk.Listbox(
-            self._infoLabelFrame, bd=0, yscrollcommand=self._scrollbar.set,
+            self._infoLabelFrame, bd=0, xscrollcommand=self._scrollbar.set,
             selectmode=tk.EXTENDED, width=25, height=5)
-        self._infoListBox.pack(side=tk.LEFT, anchor=tk.W)
-        self._scrollbar.config(command=self._infoListBox.yview)
+        self._infoListBox.pack(side=tk.TOP, anchor=tk.W, expand=1, fill=tk.X)
+        self._scrollbar.config(command=self._infoListBox.xview)
         # SCROLLBAR NOT NEEDED YET
-        #self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self._scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
         self._datacontroller.registerObserver(self, self.keywords)
 
