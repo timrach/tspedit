@@ -84,134 +84,115 @@ class SolverModule:
                       'Direction' : 'Clockwise'}
             self._datacontroller.commitChange('path', result)
 
-
     def convexHullModel(self, _start='random', _direction='random'):
         nodes = self._datacontroller.getData('nodes')
         if nodes:
             """Step 1: Sketch the connections between adjacent boundary
                        points of the convex hull."""
-            #hull is a list of ids, not nodes
+            # hull is a list of ids, not nodes,the hull is always generated CW
             hull = self.convexHullHelper(nodes)
-            print("Step 1: Identified hull:" + str(hull))
             """Step 2: Select a starting point and a direction (randomly). """
-            #start is an id not a node
+            # start is an id not a node
             start = randint(0, (len(nodes) - 1))
-            #directions: -1 = ccw, 1 = cw
-            direction = randint(0,1) 
-            """ if direction is ccw , reverse hull. the hull is always 
-             generated cw"""
-            if direction == 0:
-                direction = -1
-            """ if start or direction were predefined apply the values """
-            if not _start is 'random':
-                start = _start
+            # directions: -1 = ccw, 1 = cw
             if not _direction is 'random':
                 direction = _direction
+            else:
+                direction = randint(0, 1)
+                dirstring = "Clockwise"
+            # if direction is ccw ,reverse hull
+            if not direction == 1:
+                dirstring = "Counter Clockwise"
+                if (_direction == 'random'):
+                    dirstring += " (random)"
+                hull.reverse()
+            # if start or direction were predefined apply the values
+            if not _start is 'random':
+                start = _start
 
-            print("Step 2: Start is " + str(start) + ", direction is " + str(direction))
             """ Step 3: If the starting point is on the boundary, 
             the starting node is the current node. """
             if start in hull:
                 """The arc connecting the current node to the adjacent boundary 
                 node in the direc- tion of travel is referred to as the 
                 current arc."""
-                print("Step 3: Start is in hull")
+                # gset the current node
                 cn_index = hull.index(start)
-                an_index = (cn_index + 1) % (len(hull))
-
                 current_node = hull[cn_index]
-                adjacent_node = hull[an_index]      
+                # get adjacent node
+                an_index = (cn_index + 1) % (len(hull))
+                adjacent_node = hull[an_index]
                 """Proceed immediately to Step 4."""
             else:
-                print("Step 3: Start is not in hull")
                 """If the starting point is not on the boundary, apply the 
                 insertion rule to find the closest arc on the boundary. """
-                closest_arc = self.findClosestArc(start, hull, nodes, direction)
+                closest_arc = self.findClosestArc(start, hull, nodes)
                 """Connect the starting point to the end node of the closest 
                 arc which is in the direction of travel. 
                 This node becomes the current node."""
-                #insert startnode into hull
-                hull.insert(hull.index(closest_arc[1]), start)
-                #end
+                # insert startnode into hull
+                hull.insert(hull.index(closest_arc[0]) + 1, start)
+                # update current arc nodes
                 current_node = start
                 adjacent_node = hull[hull.index(closest_arc[1])]
-                print("Inserted node, new hull is: " + str(hull))
+            """Step 4: Apply the insertion criterion to identify which 
+                unconnected interior point is closest to the current arc."""
+            # repeat step 4 and 5 until all nodes are included in the path
             while len(hull) <= len(nodes):
-                print("Step 4")
-                """Step 4: Apply the insertion criterion to identify which 
-                unconnected interior point is closest to the current arc. 
-                Apply the insertion criterion to check whether the closest node is
-                closer to any other arc."""
-                counter = 0
                 while True:
                     current_arc = (current_node, adjacent_node)
-                    print("Current arc is " + str(current_arc))
-                    interior_node = self.findClosestInteriorNode(current_arc, hull, nodes)
-                    is_closer = self.isCloserToOtherArc(interior_node, current_arc, hull, nodes, direction)
+                    # find closest node not in the hull
+                    interior_node = self.findClosestInteriorNode(
+                        current_arc, hull, nodes)
+                    """Apply the insertion criterion to check whether the closest node is
+                       closer to any other arc."""
+                    is_closer = self.isCloserToOtherArc(
+                        interior_node, current_arc, hull, nodes)
                     """If not, proceed to Step 5. If it is, move to the end node of 
                     the current arc. This becomes the current node. Repeat Step 4."""
                     if not is_closer:
-                        print("Found closest point, proceed with Step 5")
                         break
                     else:
-                        print("Point is closer to another arc, move forward and repeat Step 4.")
                         current_node = current_arc[1]
                         an_index = (hull.index(current_node) + 1) % (len(hull))
                         adjacent_node = hull[an_index]
-                        counter += 1
                 """Step 5: Insert the closest node. The connection between the 
                 current node and the newly inserted node becomes the current arc. 
                 Retaining the current node, return to Step 4 and repeat Steps 4 and 
                 5 until a complete tour is obtained"""
-                hull.insert(hull.index(adjacent_node),interior_node)
+                hull.insert(hull.index(current_node) + 1, interior_node)
                 adjacent_node = interior_node
-                print("Step 5: Inserted node, new hull is: " + str(hull))
-            print("Found solution: " + str(hull))
-            dirstring = "Clockwise"
-            if direction == -1:
-                hull.reverse()
-                dirstring = "Counter Clockwise"
-            if (_direction == 'random'):
-                dirstring += " (random)"
+            # construct resulting data
             scale = self._datacontroller.getData('scale')
-            result = {'Tour' : hull,
-                      'Tourlength' : tsputil.getPathLength(nodes, scale, hull),
-                      'Start' : str(_start),
-                      'Direction' : dirstring}
+            result = {'Tour': hull,
+                      'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                      'Start': str(_start),
+                      'Direction': dirstring}
             self._datacontroller.commitChange('path', result)
-
 
     def findClosestInteriorNode(self, current_arc, hull, nodes):
         lengths = [float("inf") for x in range(len(nodes))]
-        for (j,node) in enumerate(nodes):
+        for (j, node) in enumerate(nodes):
             if not node.id in hull:
                 i = hull.index(current_arc[1])
                 hull.insert(i, node.id)
-                lengths[j] = (tsputil.getPathLength(nodes,100,hull))
+                lengths[j] = (tsputil.getPathLength(nodes, 100, hull))
                 hull.pop(i)
-        result = lengths.index(min(lengths))
-        print(lengths)
-        print("Closest interior point is :" + str(result))
-        return result
+        return lengths.index(min(lengths))
 
-    def isCloserToOtherArc(self, interior_node, arc, hull, nodes, direction):
-        cl = self.findClosestArc(interior_node, hull, nodes, direction)
-        result = not ((cl == arc) or (cl[::-1] == arc))
-        return result
-        
+    def isCloserToOtherArc(self, interior_node, arc, hull, nodes):
+        cl = self.findClosestArc(interior_node, hull, nodes)
+        return not ((cl == arc) or (cl[::-1] == arc))
 
-    def findClosestArc(self, point, _hull, nodes, direction, rule='CI'):
+    def findClosestArc(self, point, _hull, nodes):
         hull = copy.deepcopy(_hull)
-        lengths = []
-        print("point is:" + str(point))
-        print("hull is:" + str(hull))
-        for i in range(0, len(hull) - 1):
+        lengths = [float("inf") for x in range(len(hull))]
+        for i in range(1, len(hull)):
             hull.insert(i, point)
-            lengths.append(tsputil.getPathLength(nodes,100,hull))
+            lengths[i] = (tsputil.getPathLength(nodes, 100, hull))
             hull.pop(i)
+
         ci_index = lengths.index(min(lengths))
-        print(lengths)
-        an_index = hull[(ci_index-1)%len(hull)]
-        result =  (an_index,hull[ci_index])
-        print("Closest Arc to " + str(point) + " is " + str(result))
-        return result
+        an_index = (ci_index - 1) % len(hull)
+
+        return (hull[an_index], hull[ci_index])
