@@ -62,24 +62,15 @@ class SolverModule:
 
     def convexHullHelper(self, nodes):
         if len(nodes):
-            points = []
-
-            for n in nodes:
-                points.append((n.x, n.y))
-
-            hull = tsputil.convex_hull(points)
-            hull_nodes = []
-            for p in hull:
-                for n in nodes:
-                    pos = (n.x, n.y)
-                    if (pos == p):
-                        hull_nodes.append(n)
-            result = []
-            for node in hull_nodes:
-                result.append(node.id)
+            # convert nodes into points (x,y)
+            points = list(map(lambda n: (n.x, n.y), nodes))
+            # get convex hull as list of ids
+            result = list(map(lambda p: tsputil.findNodeByCoords(p, nodes).id,
+                              tsputil.convex_hull(points)))
             result.append(result[0])
             return result
-
+        else:
+            return None
 
     def convexHull(self):
         """ Returns all nodes defining the convex_hull or lying on its edge."""
