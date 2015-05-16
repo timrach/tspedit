@@ -16,6 +16,14 @@ def reindexNodes(nodes):
 def nothing():
     pass
 
+def findNodeByCoords(coords,nodes):
+    (x,y) = coords
+    node = list(filter(lambda n: (n.x == x) and (n.y == y), nodes))
+    if len(node):
+        return node[0]
+    else:
+        return None
+
 
 def getPathLength(nodes, scale, path):
     """ Calculates the pathlength """
