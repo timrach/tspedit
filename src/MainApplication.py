@@ -81,7 +81,7 @@ class MainApplication(tk.Frame):
         """ Clears all problem data from the program and resets the UI """
         self._nullvalues['nodes'] = []
         for key in self._data:
-            self.commitChange(key, self._nullvalues[key])           
+            self.commitChange(key, self._nullvalues[key])
 
     def getData(self, key):
         return self._data[key]
@@ -119,6 +119,5 @@ class MainApplication(tk.Frame):
                              command=self.iomodule.exportTSP,
                              accelerator="Ctrl+E")
         self.bind_all("<Control-e>", self.iomodule.exportTSP)
-        
 
         menubar.add_cascade(label="File", menu=filemenu)

@@ -56,8 +56,8 @@ class SolverModule:
             tour = solution.split()
             tour = list(map(int, tour))
             tour.append(tour[0])
-            result = {'Tour' : tour,
-                      'Tourlength' : tsputil.getPathLength(nodes, scale, tour)}
+            result = {'Tour': tour,
+                      'Tourlength': tsputil.getPathLength(nodes, scale, tour)}
             self._datacontroller.commitChange('path', result)
 
     def convexHullHelper(self, nodes):
@@ -78,10 +78,10 @@ class SolverModule:
         scale = self._datacontroller.getData('scale')
         hull = self.convexHullHelper(nodes)
         if hull:
-            result = {'Tour' : hull,
-                      'Tourlength' : tsputil.getPathLength(nodes, scale, hull),
-                      'Start' : 'Most Top Left Node',
-                      'Direction' : 'Clockwise'}
+            result = {'Tour': hull,
+                      'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                      'Start': 'Most Top Left Node',
+                      'Direction': 'Clockwise'}
             self._datacontroller.commitChange('path', result)
 
     def convexHullModel(self, _start='random', _direction='random'):

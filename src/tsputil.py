@@ -16,8 +16,9 @@ def reindexNodes(nodes):
 def nothing():
     pass
 
-def findNodeByCoords(coords,nodes):
-    (x,y) = coords
+
+def findNodeByCoords(coords, nodes):
+    (x, y) = coords
     node = list(filter(lambda n: (n.x == x) and (n.y == y), nodes))
     if len(node):
         return node[0]

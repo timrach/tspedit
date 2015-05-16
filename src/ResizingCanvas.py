@@ -38,7 +38,8 @@ class ResizingCanvas(tk.Canvas):
         self.cols = math.floor(self.width / self.fieldsize)
         self._points = [None for i in range(0, int(self.rows * self.cols))]
         self._nodes = copy.copy(self._datacontroller.getData('nodes'))
-        self._tags = ["selector", "node", "startnode", "path_line", "cog", "com"]
+        self._tags = [
+            "selector", "node", "startnode", "path_line", "cog", "com"]
 
         """ register the canvas area for click and hover events.
             If the user clicks on the canvas call the canvas_clicked method
@@ -156,13 +157,13 @@ class ResizingCanvas(tk.Canvas):
     def drawSelectionIndicator(self, index):
         """ Draws a red ring around the selected point """
         coords = self.indToCoord(index)
-        self.circle(coords[0], coords[1], 0.5, outline=tsputil.resColors[1], 
+        self.circle(coords[0], coords[1], 0.5, outline=tsputil.resColors[1],
                     width=3, fill="", tags="selector")
 
     def drawStartIndicator(self, index):
         """ Draws a blue ring around the selected point """
         coords = self.indToCoord(index)
-        self.circle(coords[0], coords[1], 0.6, outline=tsputil.resColors[2], 
+        self.circle(coords[0], coords[1], 0.6, outline=tsputil.resColors[2],
                     width=5, fill="", tags="startnode")
 
     def drawCenterOfMass(self):
@@ -281,4 +282,3 @@ class ResizingCanvas(tk.Canvas):
                     if node.start:
                         index = int(node.y * self.cols + node.x)
                         self.drawStartIndicator(index)
-

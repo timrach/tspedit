@@ -22,10 +22,9 @@ class BottomBarWidget(tk.Frame):
         # Info LABEL
         self.info_label = tk.Label(self, text="")
         self.info_label.pack(side=tk.LEFT)
-        
+
         self._datacontroller.registerData('info', "")
         self._datacontroller.registerObserver(self, self.keywords)
-
 
     def dataUpdate(self, key, data):
         if key is 'mouseGridPosition':
