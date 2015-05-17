@@ -63,9 +63,8 @@ def convex_hull(points):
          /Convex_hull/Monotone_chain#Python
 
     NOTE:
-    Slightly changed algorithm. Doesn't compute the minimal set,
-    but includes nodes directly lying on an edge of the convex_hull.
-    See 'CHANGED' comments in code.
+    Can be changed to include nodes directly lying on an edge of the 
+    convex hull. See 'CHANGE' comments in code.
     """
 
     # Sort the points lexicographically (tuples are compared lexicographically)
@@ -88,8 +87,9 @@ def convex_hull(points):
     # Build lower hull
     lower = []
     for p in points:
-        # CHANGED: while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <=
-        # 0:
+        #CHANGE:
+        # To include nodes on the edges:
+        # while len(lower) >= 2 and cross(lower[-2], lower[-1], p) < 0:
         while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
             lower.pop()
         lower.append(p)
@@ -97,8 +97,9 @@ def convex_hull(points):
     # Build upper hull
     upper = []
     for p in reversed(points):
-        # CHANGED: while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <=
-        # 0:
+        #CHANGE:
+        # To include nodes on the edges:
+        #while len(upper) >= 2 and cross(upper[-2], upper[-1], p) < 0:
         while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
             upper.pop()
         upper.append(p)

@@ -21,6 +21,13 @@ class SolverModule:
         self._datacontroller.commitChange('pathsteps', [])
         self._datacontroller.commitChange('path', {})
 
+    """------------------------------------------------------------------------
+       --------------------------- Optimal Tour -------------------------------
+       ------------------------------------------------------------------------
+       Uses the tool concorde to find the optimal tour in the problem.
+       See  http://www.math.uwaterloo.ca/tsp/concorde.html for more information
+   """
+
     def concorde(self):
         nodes = self._datacontroller.getData('nodes')
         if len(nodes):
@@ -60,7 +67,7 @@ class SolverModule:
             tour.append(tour[0])
             result = {'Tour': tour,
                       'Tourlength': tsputil.getPathLength(nodes, scale, tour)}
-            steps = [{'Tour': [], 'Tourlength': 0},result]
+            steps = [{'Tour': [], 'Tourlength': 0}, result]
 
             self._datacontroller.commitChange('pathsteps', steps)
             self._datacontroller.commitChange('path', result)
@@ -90,6 +97,17 @@ class SolverModule:
             self._datacontroller.commitChange('path', result)
 
     def convexHullModel(self, _start='random', _direction='random'):
+        """------------------------------------------------------------------------
+           ------------------------ Convex Hull Model -----------------------------
+           ------------------------------------------------------------------------
+
+
+           A model for the simulation of human solving strategies for TSP, designed
+           by MacGregor et al.
+           Description comments in the code are citations from the original paper:
+
+
+        """
         steps = [{'Tour': [], 'Tourlength': 0}]
         nodes = self._datacontroller.getData('nodes')
         scale = self._datacontroller.getData('scale')
@@ -101,7 +119,12 @@ class SolverModule:
             hull = self.convexHullHelper(nodes)
             """Step 2: Select a starting point and a direction (randomly). """
             # start is an id not a node
-            start = randint(0, (len(nodes) - 1))
+            starts = list(filter(lambda n: n.start, nodes))
+            if not len(starts):
+                starts = nodes
+            else:
+                _start = 'Random from marked nodes'
+            start = starts[randint(0, (len(starts) - 1))].id
             # directions: -1 = ccw, 1 = cw
             if not _direction is 'random':
                 direction = _direction
@@ -114,12 +137,10 @@ class SolverModule:
                 if (_direction == 'random'):
                     dirstring += " (random)"
                 hull.reverse()
-            # if start or direction were predefined apply the values
-            if not _start is 'random':
-                start = _start
 
             steps.append({'Tour': copy.deepcopy(hull),
-                          'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                          'Tourlength': tsputil.getPathLength(nodes,
+                                                              scale, hull),
                           'Start': str(_start),
                           'Direction': dirstring})
 
@@ -146,7 +167,8 @@ class SolverModule:
                 # insert startnode into hull
                 hull.insert(hull.index(closest_arc[0]) + 1, start)
                 steps.append({'Tour': copy.deepcopy(hull),
-                              'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                              'Tourlength': tsputil.getPathLength(nodes,
+                                                                  scale, hull),
                               'Start': str(_start),
                               'Direction': dirstring})
                 # update current arc nodes
@@ -180,7 +202,8 @@ class SolverModule:
                 hull.insert(hull.index(current_node) + 1, interior_node)
                 adjacent_node = interior_node
                 steps.append({'Tour': copy.deepcopy(hull),
-                              'Tourlength': tsputil.getPathLength(nodes, scale, hull),
+                              'Tourlength': tsputil.getPathLength(nodes,
+                                                                  scale, hull),
                               'Start': str(_start),
                               'Direction': dirstring})
 
