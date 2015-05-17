@@ -15,12 +15,14 @@ class PathWidget(SidebarWidget):
         self._datacontroller = datacontroller
         self._solverModule = SolverModule(self, datacontroller)
 
-        self._solvers = ['None', 'Optimal Tour', 'Convex Hull', 'Convex Human Model' ]
+        self._solvers = ['None', 'Optimal Tour', 'Convex Hull', 
+                         'Convex Human Model', 'Nearest Neighbor' ]
 
         self._methods = {'None': self._solverModule.emptySolution,
                          'Optimal Tour': self._solverModule.concorde,
                          'Convex Hull': self._solverModule.convexHull,
-                         'Convex Human Model': self._solverModule.convexHullModel}
+                         'Convex Human Model': self._solverModule.convexHullModel,
+                         'Nearest Neighbor': self._solverModule.nearestNeighbor}
         self._step = 0
         self._pathSteps = []
 

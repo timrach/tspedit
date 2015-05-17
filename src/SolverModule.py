@@ -211,5 +211,41 @@ class SolverModule:
 
         ci_index = lengths.index(min(lengths))
         an_index = (ci_index - 1) % len(hull)
-
         return (hull[an_index], hull[ci_index])
+
+    def nearestNeighbor(self):
+        steps = [{'Tour': [], 'Tourlength': 0}]
+        tour = []
+        ordiginal_nodes = self._datacontroller.getData('nodes')
+        nodes = copy.deepcopy(ordiginal_nodes)
+        scale = self._datacontroller.getData('scale')
+
+        """Step 1: Get a tour start """
+        starts = list(filter(lambda n: n.start, nodes))
+        _start = 'Random from marked nodes'
+        if not len(starts):
+            starts = nodes
+            _start = 'Random from all nodes'
+            
+        current = nodes[randint(0, (len(starts) - 1))]
+        while True:
+            tour.append(current.id)
+            nodes.remove(current)
+            steps.append({'Tour': copy.deepcopy(tour),
+                              'Tourlength': tsputil.getPathLength(
+                                ordiginal_nodes, scale, tour),
+                              'Start': str(_start),
+                              'Direction': 'random'})
+            if not len(nodes):
+                break
+            current = nodes[tsputil.nearestNeighbor(nodes, current)[0]]
+        tour.append(tour[0])
+        steps.append({'Tour': copy.deepcopy(tour),
+                          'Tourlength': tsputil.getPathLength(
+                            ordiginal_nodes, scale, tour),
+                          'Start': str(_start),
+                          'Direction': 'random'})
+        self._datacontroller.commitChange('pathsteps', steps)
+        self._datacontroller.commitChange('path', steps[-1])
+
+

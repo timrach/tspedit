@@ -30,8 +30,8 @@ class Test:
         self._data = {'nodes' : self.nodes,
                       'scale' : self.scale}
 
-        solver = SolverModule(self,self)
-        solver.convexHullModel(_start=5)
+        self.testNN()
+        
 
     def registerData(self, key, value):
         pass
@@ -39,6 +39,15 @@ class Test:
         return self._data[key]
     def commitChange(self,key,data):
         pass
+
+    def testcHM(self):
+        solver = SolverModule(self,self)
+        solver.convexHullModel(_start=5)
+
+    def testNN(self):
+        solver = SolverModule(self,self)
+        solver.nearestNeighbor()
+
 
 if __name__ == '__main__':
     test = Test()

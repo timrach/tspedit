@@ -44,11 +44,11 @@ def distance(start, end, scale):
 
 def nearestNeighbor(nodes, node):
     """ Finds the distance of the nearest neighbor """
-    result = float("Inf")
-    for n in nodes:
-        if n is not node:
-            result = min(result, distance(node, n, 1))
-    return result
+    distances = list(map(lambda n: distance(node,n,100), nodes))
+    if node in nodes:
+        distances[nodes.index(node)] = float("Inf")
+    result = min(distances)
+    return (distances.index(result), result)
 
 
 def convex_hull(points):
