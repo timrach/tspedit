@@ -13,6 +13,8 @@ import tsputil
 import math
 import copy
 
+PADDING = 5
+
 
 class ResizingCanvas(tk.Canvas):
 
@@ -23,11 +25,7 @@ class ResizingCanvas(tk.Canvas):
 
         self.configure(highlightthickness=0, background="white")
 
-        # Public vars
-        self.keywords = ['nodes', 'startnode', 'path', 'selectedNode']
-
         # Private vars
-        self._parent = parent
         self._datacontroller = datacontroller
         self._height = self.winfo_reqheight()
         self._width = self.winfo_reqwidth()
@@ -35,13 +33,12 @@ class ResizingCanvas(tk.Canvas):
         self._hscale = 1.0
         self._wscale = 1.0
         self._fieldsize = 30
-        self._padding = 5
         self._rows = math.floor(self._height / self._fieldsize)
         self._cols = math.floor(self._width / self._fieldsize)
         self._points = [None for i in range(0, int(self._rows * self._cols))]
         self._nodes = copy.copy(self._datacontroller.get_data('nodes'))
-        self._tags = [
-            "selector", "node", "startnode", "path_line", "cog", "com"]
+        # Used Tags: 
+        # ["selector", "node", "startnode", "path_line", "cog", "com"]
 
         """ register the canvas area for click and hover events.
             If the user clicks on the canvas call the canvas_clicked method
@@ -54,7 +51,8 @@ class ResizingCanvas(tk.Canvas):
 
         self._datacontroller.register_data('selectedNode', ())
         self._datacontroller.register_data('mouseGridPosition', ())
-        self._datacontroller.register_observer(self, self.keywords)
+        self._datacontroller.register_observer(
+            self, ['nodes', 'startnode', 'path', 'selectedNode'])
 
     def on_resize(self, event):
         """ Gets called whenever the window is resized.
@@ -98,9 +96,9 @@ class ResizingCanvas(tk.Canvas):
         Calls the update routine for the position indicator label"""
         # get relative field coordinates
         x_value = math.floor(
-            (event.x - self._padding) / (self._fieldsize * self._wscale))
+            (event.x - PADDING) / (self._fieldsize * self._wscale))
         y_value = math.floor(
-            (event.y - self._padding) / (self._fieldsize * self._hscale))
+            (event.y - PADDING) / (self._fieldsize * self._hscale))
         self._datacontroller.commit_change(
             'mouseGridPosition', (x_value, y_value))
 
@@ -111,9 +109,9 @@ class ResizingCanvas(tk.Canvas):
         and the event passed to the other modules."""
         # get relative field coordinates
         x_value = math.floor(
-            (event.x - self._padding) / (self._fieldsize * self._wscale))
+            (event.x - PADDING) / (self._fieldsize * self._wscale))
         y_value = math.floor(
-            (event.y - self._padding) / (self._fieldsize * self._hscale))
+            (event.y - PADDING) / (self._fieldsize * self._hscale))
         # only do something if the clicked position is within bounds
         if (x_value < self._cols and y_value < self._rows
                 and x_value >= 0 and y_value >= 0):
@@ -213,7 +211,7 @@ class ResizingCanvas(tk.Canvas):
             fill="#444", tags="path_line",
             activefill="black", width=3)
         self.move(
-            line, self._padding * self._wscale, self._padding * self._hscale)
+            line, PADDING * self._wscale, PADDING * self._hscale)
 
     def circle(self, x_value, y_value, _radius, **options):
         """ Draws a circle at the center of cell x,y with radius _radius """
@@ -223,8 +221,8 @@ class ResizingCanvas(tk.Canvas):
         right = ((x_value + 0.5) * self._fieldsize + radius) * self._wscale
         bottom = ((y_value + 0.5) * self._fieldsize + radius) * self._hscale
         circ = self.create_oval(left, top, right, bottom, **options)
-        self.move(circ, self._padding * self._wscale,
-                  self._padding * self._hscale)
+        self.move(circ, PADDING * self._wscale,
+                  PADDING * self._hscale)
         return circ
 
     def delete_node(self, node):
@@ -243,7 +241,6 @@ class ResizingCanvas(tk.Canvas):
             if node.start:
                 index = int(node.y_coord * self._cols + node.x_coord)
                 self.draw_start_indicator(index)
-
 
     def data_update(self, key, data):
         """ Handles upates in the observed data"""
