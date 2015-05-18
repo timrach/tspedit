@@ -36,7 +36,6 @@ class PathWidget(SidebarWidget):
                                       solver_module.convex_hull_model),
                                      ('Nearest Neighbor',
                                       solver_module.nearest_neighbor)])
-        self._solvers = [key for key in self._methods]
         # setup the ui
         self._setup_gui()
         # register as observer
@@ -44,6 +43,7 @@ class PathWidget(SidebarWidget):
 
     def _setup_gui(self):
         """ UI """
+        solvers = [key for key in self._methods]
         solver_container = tk.Frame(self._sub_frame)
         solver_container.pack(side=tk.TOP, anchor=tk.W)
         # SOLVER LABEL
@@ -52,10 +52,10 @@ class PathWidget(SidebarWidget):
         solvers_frame = tk.Frame(solver_container)
         solvers_frame.pack(side=tk.RIGHT, anchor=tk.W)
         self._solver_var = tk.StringVar(solvers_frame)
-        self._solver_var.set(self._solvers[0])
+        self._solver_var.set(solvers[0])
         self._solver_var.trace("w", lambda a, b, c: self._on_dropdown_select())
         tk.OptionMenu(*((solvers_frame, self._solver_var) +
-                        tuple(self._solvers))).pack(side=tk.RIGHT, anchor=tk.W)
+                        tuple(solvers))).pack(side=tk.RIGHT, anchor=tk.W)
 
         # INFO FRAME
         info_labelframe = tk.LabelFrame(
@@ -73,28 +73,24 @@ class PathWidget(SidebarWidget):
         # Stepper Controls
         stepper_frame = tk.Frame(self._sub_frame)
         stepper_frame.pack(side=tk.BOTTOM, fill=tk.X, anchor=tk.W)
+        self._stepper_controls = [None, None, None, None]
 
-        self._first_step_button = tk.Button(stepper_frame, text="<<",
-                                            command=lambda: self._do_step(
-                                                "first"),
-                                            state=tk.DISABLED)
-        self._first_step_button.pack(side=tk.LEFT)
-        self._prev_step_button = tk.Button(stepper_frame, text="<",
-                                           command=lambda: self._do_step(
-                                               "prev"),
-                                           state=tk.DISABLED)
-        self._prev_step_button.pack(side=tk.LEFT)
-
-        self._last_step_button = tk.Button(stepper_frame, text=">>",
-                                           command=lambda: self._do_step(
-                                               "last"),
-                                           state=tk.DISABLED)
-        self._last_step_button.pack(side=tk.RIGHT)
-        self._next_step_button = tk.Button(stepper_frame, text=">",
-                                           command=lambda: self._do_step(
-                                               "next"),
-                                           state=tk.DISABLED)
-        self._next_step_button.pack(side=tk.RIGHT)
+        self._stepper_controls[0] = tk.Button(
+            stepper_frame, text="<<", command=lambda: self._do_step("first"),
+            state=tk.DISABLED)
+        self._stepper_controls[1] = tk.Button(
+            stepper_frame, text="<", command=lambda: self._do_step("prev"),
+            state=tk.DISABLED)
+        self._stepper_controls[2] = tk.Button(
+            stepper_frame, text=">", command=lambda: self._do_step("next"),
+            state=tk.DISABLED)
+        self._stepper_controls[3] = tk.Button(
+            stepper_frame, text=">>", command=lambda: self._do_step("last"),
+            state=tk.DISABLED)
+        self._stepper_controls[0].pack(side=tk.LEFT)
+        self._stepper_controls[1].pack(side=tk.LEFT)
+        self._stepper_controls[3].pack(side=tk.RIGHT)
+        self._stepper_controls[2].pack(side=tk.RIGHT)
 
     def _on_dropdown_select(self):
         """Gets called when the user selects a method from the dropdown.
@@ -117,18 +113,18 @@ class PathWidget(SidebarWidget):
             self._step = len(self._path_steps) - 1
 
         if self._step > 0:
-            self._first_step_button.config(state=tk.NORMAL)
-            self._prev_step_button.config(state=tk.NORMAL)
+            self._stepper_controls[0].config(state=tk.NORMAL)
+            self._stepper_controls[1].config(state=tk.NORMAL)
         else:
-            self._first_step_button.config(state=tk.DISABLED)
-            self._prev_step_button.config(state=tk.DISABLED)
+            self._stepper_controls[0].config(state=tk.DISABLED)
+            self._stepper_controls[1].config(state=tk.DISABLED)
 
         if self._step < len(self._path_steps) - 1:
-            self._last_step_button.config(state=tk.NORMAL)
-            self._next_step_button.config(state=tk.NORMAL)
+            self._stepper_controls[3].config(state=tk.NORMAL)
+            self._stepper_controls[2].config(state=tk.NORMAL)
         else:
-            self._last_step_button.config(state=tk.DISABLED)
-            self._next_step_button.config(state=tk.DISABLED)
+            self._stepper_controls[3].config(state=tk.DISABLED)
+            self._stepper_controls[2].config(state=tk.DISABLED)
 
         self._datacontroller.commit_change(
             'path', self._path_steps[self._step])
@@ -145,10 +141,10 @@ class PathWidget(SidebarWidget):
             self._path_steps = data
             self._step = len(data) - 1
             if data:
-                self._first_step_button.config(state=tk.NORMAL)
-                self._prev_step_button.config(state=tk.NORMAL)
+                self._stepper_controls[0].config(state=tk.NORMAL)
+                self._stepper_controls[1].config(state=tk.NORMAL)
             else:
-                self._first_step_button.config(state=tk.DISABLED)
-                self._prev_step_button.config(state=tk.DISABLED)
-                self._last_step_button.config(state=tk.DISABLED)
-                self._next_step_button.config(state=tk.DISABLED)
+                self._stepper_controls[0].config(state=tk.DISABLED)
+                self._stepper_controls[1].config(state=tk.DISABLED)
+                self._stepper_controls[3].config(state=tk.DISABLED)
+                self._stepper_controls[2].config(state=tk.DISABLED)
