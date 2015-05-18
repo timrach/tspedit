@@ -22,9 +22,6 @@ class PathWidget(SidebarWidget):
     def __init__(self, parent, datacontroller, **options):
         SidebarWidget.__init__(self, parent, text='Path', **options)
 
-        # Public vars
-        self.keywords = ['path', 'pathsteps']
-
         # Private vars
         self._datacontroller = datacontroller
         self._step = 0
@@ -43,7 +40,7 @@ class PathWidget(SidebarWidget):
         # setup the ui
         self._setup_gui()
         # register as observer
-        self._datacontroller.register_observer(self, self.keywords)
+        self._datacontroller.register_observer(self, ['path', 'pathsteps'])
 
     def _setup_gui(self):
         """ UI """
@@ -56,7 +53,7 @@ class PathWidget(SidebarWidget):
         solvers_frame.pack(side=tk.RIGHT, anchor=tk.W)
         self._solver_var = tk.StringVar(solvers_frame)
         self._solver_var.set(self._solvers[0])
-        self._solver_var.trace("w", self._on_dropdown_select)
+        self._solver_var.trace("w", lambda a, b, c: self._on_dropdown_select())
         tk.OptionMenu(*((solvers_frame, self._solver_var) +
                         tuple(self._solvers))).pack(side=tk.RIGHT, anchor=tk.W)
 
@@ -64,14 +61,14 @@ class PathWidget(SidebarWidget):
         info_labelframe = tk.LabelFrame(
             self._sub_frame, text="Info", padx=5, pady=5)
         info_labelframe.pack(side=tk.TOP, fill=tk.X, anchor=tk.W)
-        self._scrollbar = tk.Scrollbar(
+        scrollbar = tk.Scrollbar(
             info_labelframe, orient=tk.HORIZONTAL)
         self._info_listbox = tk.Listbox(
-            info_labelframe, bd=0, xscrollcommand=self._scrollbar.set,
+            info_labelframe, bd=0, xscrollcommand=scrollbar.set,
             selectmode=tk.EXTENDED, width=25, height=5)
         self._info_listbox.pack(side=tk.TOP, anchor=tk.W, expand=1, fill=tk.X)
-        self._scrollbar.config(command=self._info_listbox.xview)
-        self._scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+        scrollbar.config(command=self._info_listbox.xview)
+        scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 
         # Stepper Controls
         stepper_frame = tk.Frame(self._sub_frame)
@@ -99,7 +96,7 @@ class PathWidget(SidebarWidget):
                                            state=tk.DISABLED)
         self._next_step_button.pack(side=tk.RIGHT)
 
-    def _on_dropdown_select(self, *args):
+    def _on_dropdown_select(self):
         """Gets called when the user selects a method from the dropdown.
            Looks up the corresponding solving method and executes it"""
         method = str(self._solver_var.get())
