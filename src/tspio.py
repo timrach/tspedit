@@ -1,4 +1,4 @@
-""" 
+"""
     The tspio module basically contains the messy code that is avoided in the
     IOModule but has to exist, like showing file dialogues, parsing files
     and writing files, as well as some helper methods for string construction
@@ -27,8 +27,8 @@ def parse_tsp_file(file):
     start_regex = re.compile("COMMENT : STARTNODE : ([0-9])+")
     start_regex2 = re.compile("COMMENT : STARTNODES : (.*)")
     # Parse nodes
-    node_regex = re.compile("([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)",
-                            re.MULTILINE)
+    node_regex = re.compile(
+        r"([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)", re.MULTILINE)
     # Parse Clusters
     cluster_regex = re.compile("COMMENT : CLUSTERS : (.*)")
 
@@ -53,21 +53,17 @@ def parse_tsp_file(file):
                 name = nar.group(1)
             # Match coordinates
             if nor:
-                x_value = int(float(nor.group(2)))
-                y_value = int(float(nor.group(3)))
-                nodes.append([x_value, y_value])
+                nodes.append([int(float(nor.group(2))),
+                              int(float(nor.group(3)))])
             # Match Comments
             if cor:
                 # Match Clusters
                 if clr:
-                    groups = clr.group(1)
-                    groups = groups.replace(" ", "")
-                    groups = ast.literal_eval(groups)
+                    groups = ast.literal_eval(clr.group(1).replace(" ", ""))
                 elif stre:
                     startnodes = [int(stre.group(1))]
                 elif stre2:
-                    startnodes = stre2.group(1)
-                    startnodes = ast.literal_eval(startnodes)
+                    startnodes = ast.literal_eval(stre2.group(1))
                 else:
                     comment = comment + cor.group(1) + "\n"
     _file.close()
@@ -98,7 +94,7 @@ def construct_groups_string(nodes):
 
 
 def construct_startnodes_string(nodes):
-    """ Looksup every node with the start bit and constructs a string of 
+    """ Looksup every node with the start bit and constructs a string of
         the list of the ids of those nodes."""
     res = [node.nid for node in nodes if node.start]
     if len(res):
