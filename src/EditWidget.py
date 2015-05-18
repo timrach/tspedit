@@ -61,7 +61,7 @@ class EditWidget(SidebarWidget):
         # register color option for the selection event
         # if a color is selected, the global color will be
         # switched by the switchColor method
-        self._colorvar.trace("w", self._on_dropdown_select)
+        self._colorvar.trace("w", lambda a, b, c: self._on_dropdown_select())
         color_option = tk.OptionMenu(*((color_frame, self._colorvar)
                                        + tuple(tsputil.COLORS)))
         color_option.pack(side=tk.RIGHT, anchor=tk.W)
@@ -76,7 +76,8 @@ class EditWidget(SidebarWidget):
             self._nodelist_labelframe, bd=0,
             yscrollcommand=self._scrollbar.set,
             selectmode=tk.SINGLE)
-        self._node_listbox.bind('<<ListboxSelect>>', self._on_listbox_select)
+        self._node_listbox.bind('<<ListboxSelect>>',
+                                lambda e: self._on_listbox_select())
         self._node_listbox.pack(side=tk.LEFT, expand=1, fill=tk.X, anchor=tk.W)
         self._scrollbar.config(command=self._node_listbox.yview)
         self._scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -135,7 +136,7 @@ class EditWidget(SidebarWidget):
         index = int(self._node_listbox.curselection()[0])
         self._datacontroller.commit_change('selectedNode', nodes[index])
 
-    def _on_dropdown_select(self, *args):
+    def _on_dropdown_select(self):
         """Gets called when the user selects a color from the dropdown.
            Notifies the datacontroller about the change."""
         self._datacontroller.commit_change('nodecolor', self._colorvar.get())
