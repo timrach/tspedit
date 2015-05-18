@@ -34,8 +34,10 @@ class PathWidget(SidebarWidget):
         self._methods = OrderedDict([('None', solver_module.empty_solution),
                                      ('Optimal Tour', solver_module.concorde),
                                      ('Convex Hull', solver_module.convex_hull),
-                                     ('Convex Human Model', solver_module.convex_hull_model),
-                                     ('Nearest Neighbor', solver_module.nearest_neighbor)])
+                                     ('Convex Human Model', 
+                                      solver_module.convex_hull_model),
+                                     ('Nearest Neighbor', 
+                                      solver_module.nearest_neighbor)])
         self._solvers = [key for key in self._methods]
         # setup the ui
         self._setup_gui()
