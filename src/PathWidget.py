@@ -4,6 +4,7 @@
 """
 from SidebarWidget import SidebarWidget
 from SolverModule import SolverModule
+from collections import OrderedDict
 try:
     # for Python2
     import Tkinter as tk
@@ -30,11 +31,11 @@ class PathWidget(SidebarWidget):
         self._path_steps = []
         self._solver_var = None
         solver_module = SolverModule(self, datacontroller)
-        self._methods = {'None': solver_module.empty_solution,
-                         'Optimal Tour': solver_module.concorde,
-                         'Convex Hull': solver_module.convex_hull,
-                         'Convex Human Model': solver_module.convex_hull_model,
-                         'Nearest Neighbor': solver_module.nearest_neighbor}
+        self._methods = OrderedDict([('None', solver_module.empty_solution),
+                                     ('Optimal Tour', solver_module.concorde),
+                                     ('Convex Hull', solver_module.convex_hull),
+                                     ('Convex Human Model', solver_module.convex_hull_model),
+                                     ('Nearest Neighbor', solver_module.nearest_neighbor)])
         self._solvers = [key for key in self._methods]
         # setup the ui
         self._setup_gui()
