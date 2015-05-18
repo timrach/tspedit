@@ -1,4 +1,7 @@
 #!/usr/local/bin/python3
+"""
+	Bootstrapper for the tspedit program
+"""
 
 try:
     # for Python2
@@ -6,10 +9,10 @@ try:
 except ImportError:
     # for Python3
     import tkinter as tk
-from MainApplication import *
+from MainApplication import MainApplication
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    MainApplication(root).pack(fill=tk.BOTH, expand=True)
-    root.title("tspedit")
-    root.mainloop()
+    ROOT = tk.Tk()
+    MainApplication(ROOT).pack(fill=tk.BOTH, expand=True)
+    ROOT.title("tspedit")
+    ROOT.mainloop()

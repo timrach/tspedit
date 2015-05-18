@@ -1,3 +1,7 @@
+"""
+BottomBarWidget.py
+See class description
+"""
 try:
     # for Python2
     import Tkinter as tk
@@ -7,6 +11,11 @@ except ImportError:
 
 
 class BottomBarWidget(tk.Frame):
+
+    """Handles the UI for the bar below the canvas area.
+       The mouse position is displayed by a Label on the right side
+       and a label displaying information propagated through the
+       'info' keyword on the left side"""
 
     def __init__(self, parent, datacontroller, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
@@ -23,14 +32,16 @@ class BottomBarWidget(tk.Frame):
         self.info_label = tk.Label(self, text="")
         self.info_label.pack(side=tk.LEFT)
 
-        self._datacontroller.registerData('info', "")
-        self._datacontroller.registerObserver(self, self.keywords)
+        self._datacontroller.register_data('info', "")
+        self._datacontroller.register_observer(self, self.keywords)
 
-    def dataUpdate(self, key, data):
+    def data_update(self, key, data):
+        """ Handles updates for registered data"""
         if key is 'mouseGridPosition':
             if data:
-                (q, r) = data
+                (x_value, y_value) = data
                 self.position_label.config(
-                    text=("( X:" + str(q) + " , " + "Y:" + str(r)) + ")")
+                    text=("( X:" + str(x_value) + " , "
+                          + "Y:" + str(y_value)) + ")")
         if key is 'info':
             self.info_label.config(text=str(data))

@@ -1,3 +1,7 @@
+"""
+    SidebarWidget.py
+    See class description
+"""
 try:
     # for Python2
     import Tkinter as tk
@@ -10,34 +14,37 @@ except ImportError:
 
 class SidebarWidget(tk.Frame):
 
+    """ The SidebarWidget is an abstract class for widgets located on the
+        sidebar. It abstracts the collapse, expand functionality and displays
+        the name of the widget."""
+
     def __init__(self, parent, text='', **options):
         tk.Frame.__init__(self, parent, **options)
 
         self.configure(pady=10)
 
         self._parent = parent
-        self.show = False
+        self._titel_label = None
+        self._toggle_button = None
+        self._show = False
 
-        self.titleFrame = ttk.Frame(self)
-        self.titleFrame.pack(fill=tk.X, expand=1)
-        ttk.Label(
-            self.titleFrame, text=text).pack(side=tk.LEFT, fill=tk.X, expand=1)
-        self.toggleButton = ttk.Checkbutton(
-            self.titleFrame, width=2, text='+',
+        title_frame = ttk.Frame(self)
+        title_frame.pack(fill=tk.X, expand=1)
+        self._titel_label = ttk.Label(title_frame, text=text).pack(
+            side=tk.LEFT, fill=tk.X, expand=1)
+        self._toggle_button = ttk.Checkbutton(
+            title_frame, width=2, text='+',
             command=self.toggle, style='Toolbutton')
-        self.toggleButton.pack(side=tk.LEFT)
-        self.subFrame = tk.Frame(self, relief=tk.SUNKEN, borderwidth=1)
+        self._toggle_button.pack(side=tk.LEFT)
+        self._sub_frame = tk.Frame(self, relief=tk.SUNKEN, borderwidth=1)
 
     def toggle(self):
-        self.show = not self.show
-        if self.show:
-            self.subFrame.pack(fill=tk.X, expand=1)
-            self.toggleButton.configure(text='-')
+        """ Toggles the show bit and accordingly expands or collapses the
+            widgets contents by packing or forgetting the elements"""
+        self._show = not self._show
+        if self._show:
+            self._sub_frame.pack(fill=tk.X, expand=1)
+            self._toggle_button.configure(text='-')
         else:
-            self.subFrame.forget()
-            self.toggleButton.configure(text='+')
-
-    def dataUpdate(self, key, data):
-        """ Is implemented by inheriting classes """
-        print("Note: A SidebarWidget observing " +
-              key + " is not implementing dataUpdate.")
+            self._sub_frame.forget()
+            self._toggle_button.configure(text='+')

@@ -1,13 +1,17 @@
+"""
+    SidebarFrame.py
+    See class description
+"""
 try:
     # for Python2
     import Tkinter as tk
 except ImportError:
     # for Python3
     import tkinter as tk
-import tsputil
-from FileInfoWidget import *
-from PathWidget import *
-from EditWidget import *
+    import tkinter.ttk as ttk
+from FileInfoWidget import FileInfoWidget
+from PathWidget import PathWidget
+from EditWidget import EditWidget
 
 
 class SidebarFrame(tk.Frame):
@@ -24,19 +28,19 @@ class SidebarFrame(tk.Frame):
         ttk.Label(
             self,
             text="-------------------------------------------").pack(
-            side=tk.TOP, fill=tk.X)
+                side=tk.TOP, fill=tk.X)
 
         # File info widget
-        self.fileInfo = FileInfoWidget(self, datacontroller)
-        self.fileInfo.pack(fill=tk.X, side=tk.TOP)
-        self.fileInfo.toggle()
+        file_info = FileInfoWidget(self, datacontroller)
+        file_info.pack(fill=tk.X, side=tk.TOP)
+        file_info.toggle()
 
         # Editing widget
-        self.editWidget = EditWidget(self, datacontroller)
-        self.editWidget.pack(fill=tk.X, side=tk.TOP)
-        self.editWidget.toggle()
+        edit_widget = EditWidget(self, datacontroller)
+        edit_widget.pack(fill=tk.X, side=tk.TOP)
+        edit_widget.toggle()
 
         # Path widget
-        self.pathWidget = PathWidget(self, datacontroller)
-        self.pathWidget.pack(fill=tk.X, side=tk.TOP)
-        self.pathWidget.toggle()
+        path_widget = PathWidget(self, datacontroller)
+        path_widget.pack(fill=tk.X, side=tk.TOP)
+        path_widget.toggle()

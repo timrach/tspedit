@@ -1,27 +1,37 @@
-class Node:
+"""
+    Node.py
+    See class description
+"""
+
+
+class Node(object):
 
     """ Represents a node in a 2D cell array
         at position x,y. The node has an id and a color
         represented by an integer value """
 
-    def __init__(self, id, x, y, color):
-        self.id = id
-        self.x = x
-        self.y = y
+    def __init__(self, nid, x, y, color):
+        self.nid = nid
+        self.x_coord = x
+        self.y_coord = y
         self.color = color
         self.start = False
 
-    def toString(self):
+    def to_string(self):
         """ Construct a string with the node informations """
         xdelim = ""
-        if(self.x < 10):
-            xdelim = "  "
         ydelim = ""
-        if(self.y < 10):
+        if self.x_coord < 10:
+            xdelim = "  "
+        if self.y_coord < 10:
             ydelim = "  "
 
-        result = (str(self.id) + "     X:" + xdelim + str(self.x)
-                  + "      Y:" + ydelim + str(self.y))
+        result = (str(self.nid) + "     X:" + xdelim + str(self.x_coord)
+                  + "      Y:" + ydelim + str(self.y_coord))
         if self.start:
             result += "     Start"
         return result
+
+    def get_coords(self):
+        """ returns the node coordinates as a tuple"""
+        return (self.x_coord, self.y_coord)
