@@ -235,16 +235,6 @@ class ResizingCanvas(tk.Canvas):
         self.delete(self._points[ind])
         self._points[ind] = None
 
-    def redraw_starts(self):
-        """Deletes all start markers and redraws them. Is needed when
-           startnodes are deleted"""
-        self.delete("startnode")
-        for node in self._nodes:
-            if node.start:
-                index = int(node.y_coord * self._cols + node.x_coord)
-                self.draw_start_indicator(index)
-
-
     def data_update(self, key, data):
         """ Handles upates in the observed data"""
         if key is 'nodes':
@@ -255,7 +245,6 @@ class ResizingCanvas(tk.Canvas):
             for node in diffsub:
                 self.delete_node(node)
             self._nodes = copy.copy(data)
-            self.redraw_starts()
             self.draw_center_of_mass()
             self.draw_geometrical_center()
         elif key is 'selectedNode':
@@ -278,4 +267,9 @@ class ResizingCanvas(tk.Canvas):
                               end.x_coord, end.y_coord)
             self.tag_raise("node")
         elif key is 'startnode':
-            self.redraw_starts()
+            self.delete("startnode")
+            if data:
+                for node in data:
+                    if node.start:
+                        index = int(node.y_coord * self._cols + node.x_coord)
+                        self.draw_start_indicator(index)
