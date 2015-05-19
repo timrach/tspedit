@@ -114,29 +114,20 @@ def import_tsp(scale):
     if filename:
         data = parse_tsp_file(filename.name)
 
-        node_list = []
-        # If the nodes are not grouped, draw them in the currently
-        # selected color
-        if data['groups'] == []:
-            color = tsputil.COLORS[0]
-            node_list = [Node(index, int(node[0] / scale), int(node[1] / scale), color)
-                         for (index, node) in enumerate(data['nodes'])]
-        # if the nodes are grouped, draw nodes from the same group in the same
-        # color
-        else:
-            # iterate over groups
-            for (index, group) in enumerate(data['groups']):
-                # iterate over node ids in the group
-                for nid in group:
-                    # get node coordinates
-                    node = data['nodes'][nid - 1]
-                    new_node = Node(len(node_list),
-                                    int(node[0] / scale),
-                                    int(node[1] / scale),
-                                    tsputil.COLORS[index])
-                    if new_node.nid in data['startnodes']:
-                        new_node.start = True
-                    node_list.append(new_node)
+        #Construct the list of ungrouped nodes
+        color = tsputil.COLORS[0]
+        node_list = [Node(index, int(node[0] / scale), int(node[1] / scale), color)
+                     for (index, node) in enumerate(data['nodes'])]
+
+        # if the nodes are grouped, change node colors accordingly
+        for (index, group) in enumerate(data['groups']):
+            for nid in group:
+                node_list[nid-1].color = tsputil.COLORS[index]
+
+        #mark nodes as startnode if specified
+        for nid in data['startnodes']:
+            node_list[nid].start = True
+
         result = data
         result['nodes'] = node_list
         return result
@@ -172,7 +163,7 @@ def export_tsp(nodes, scale, comment, pre_filename=None):
         _file.write("NODE_COORD_SECTION" + "\n")
 
         for (index, node) in enumerate(nodes):
-            _file.write(str(index) + "  " + str(node.x_coord * scale) +
+            _file.write(str(index + 1) + "  " + str(node.x_coord * scale) +
                         " " + str(node.y_coord * scale) + "\n")
         _file.write("EOF")
         _file.close()
