@@ -117,8 +117,7 @@ class SolverModule:
             if not startinfo[1] == 1:
                 hull.reverse()
 
-            steps.append(construct_step(hull, startinfo[2],
-                                        startinfo[3], nodes, scale))
+            steps.append(construct_step(hull, startinfo[2], startinfo[3], nodes, scale))
 
             # Step 3: If the starting point is on the boundary,
             # the starting node is the current node. """
@@ -141,8 +140,7 @@ class SolverModule:
                 # This node becomes the current node."""
                 # insert startnode into hull
                 hull.insert(hull.index(closest_arc[0]) + 1, start)
-                steps.append(construct_step(hull, startinfo[2],
-                                            startinfo[3], nodes, scale))
+                steps.append(construct_step(hull, startinfo[2], startinfo[3], nodes, scale))
                 # update current arc nodes
                 current_node = start
                 adjacent_node = hull[hull.index(closest_arc[1])]
@@ -153,13 +151,10 @@ class SolverModule:
                 while True:
                     current_arc = (current_node, adjacent_node)
                     # find closest node not in the hull
-                    interior_node = find_closest_interior_node(current_arc,
-                                                               hull, nodes)
+                    interior_node = find_closest_interior_node(current_arc, hull, nodes)
                     # Apply the insertion criterion to check whether the
                     # closest node is closer to any other arc.
-                    is_closer = is_closer_to_other_arc(interior_node,
-                                                       current_arc,
-                                                       hull, nodes)
+                    is_closer = is_closer_to_other_arc(interior_node, current_arc, hull, nodes)
                     # If not, proceed to Step 5. If it is, move to the end node of
                     # the current arc. This becomes the current node. Repeat
                     # Step 4.
@@ -175,8 +170,7 @@ class SolverModule:
                 # 5 until a complete tour is obtained"""
                 hull.insert(hull.index(current_node) + 1, interior_node)
                 adjacent_node = interior_node
-                steps.append(construct_step(hull, startinfo[2],
-                                            startinfo[3], nodes, scale))
+                steps.append(construct_step(hull, startinfo[2], startinfo[3], nodes, scale))
 
             self._datacontroller.commit_change('pathsteps', steps)
             self._datacontroller.commit_change('path', steps[-1])
@@ -196,24 +190,16 @@ class SolverModule:
             starts = nodes
             _start = 'Random from all nodes'
 
-        current = nodes[randint(0, (len(starts) - 1))]
+        current = starts[randint(0, (len(starts) - 1))]
         while True:
             tour.append(current.nid)
             nodes.remove(current)
-            steps.append({'Tour': copy.deepcopy(tour),
-                          'Tourlength': tsputil.get_path_length(original_nodes,
-                                                                scale, tour),
-                          'Start': str(_start),
-                          'Direction': 'random'})
+            steps.append(construct_step(tour, str(_start), 'random', original_nodes, scale))
             if not len(nodes):
                 break
             current = nodes[tsputil.nearest_neighbor(nodes, current)[0]]
         tour.append(tour[0])
-        steps.append({'Tour': copy.deepcopy(tour),
-                      'Tourlength': tsputil.get_path_length(original_nodes,
-                                                            scale, tour),
-                      'Start': str(_start),
-                      'Direction': 'random'})
+        steps.append(construct_step(tour, str(_start), 'random', original_nodes, scale))
         self._datacontroller.commit_change('pathsteps', steps)
         self._datacontroller.commit_change('path', steps[-1])
 
