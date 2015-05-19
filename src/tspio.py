@@ -19,64 +19,55 @@ except ImportError:
 def parse_tsp_file(file):
     """ Parses data from a tspfile with regexes and returns a tuple
     holding the nodes and groupinformation"""
-    # Parse Name
-    name_regex = re.compile("NAME : (.*)")
-    # Parse comment
-    comment_regex = re.compile("COMMENT : (.*)")
-    # Parse single startnode
-    start_regex = re.compile("COMMENT : STARTNODE : ([0-9])+")
-    start_regex2 = re.compile("COMMENT : STARTNODES : (.*)")
-    # Parse nodes
-    node_regex = re.compile(
-        r"([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)", re.MULTILINE)
-    # Parse Clusters
-    cluster_regex = re.compile("COMMENT : CLUSTERS : (.*)")
+    # define regular expressions for the fields to parse
+    regexes = {'name': re.compile("NAME : (.*)"),
+               'comment': re.compile("COMMENT : (.*)"),
+               'single_start': re.compile("COMMENT : STARTNODE : ([0-9])+"),
+               'multi_start': re.compile("COMMENT : STARTNODES : (.*)"),
+               'nodes':
+               re.compile(
+                   r"([0-9]+)\ *([0-9]*\.?[0-9]*)\ *([0-9]*\.?[0-9]*)",
+                   re.MULTILINE),
+               'groups': re.compile("COMMENT : CLUSTERS : (.*)")}
+    # initialize results
+    result = {'name': 'No Name', 'comment': '', 'startnodes': [],
+              'nodes': [], 'groups': []}
+    # Define application rules
 
-    name = "No Name"
-    comment = ""
-    startnodes = []
-    nodes = []
-    groups = []
-
+    def apply_match(regex_name, match):
+        """Applies a specific processing rule for each regex sperately as the
+        fields vary in data types and structures"""
+        if regex_name is 'name':
+            result['name'] = match.group(1)
+        elif regex_name is 'comment':
+            result['comment'] += match.group(1) + "\n"
+        elif regex_name is 'single_start':
+            result['startnodes'] = [int(match.group(1))]
+        elif regex_name is 'multi_start':
+            result['startnodes'] = ast.literal_eval(match.group(1))
+        elif regex_name is 'groups':
+            result['groups'] = ast.literal_eval(
+                match.group(1).replace(" ", ""))
+        elif regex_name is 'nodes':
+            result['nodes'].append([int(float(match.group(2))),
+                                    int(float(match.group(3)))])
+    # Process the lines in the file and check for matches for each regular
+    # expression
     _file = open(file, 'r')
     lines = _file.readlines()
-    for line in range(len(lines)):
-        nar = re.match(name_regex, lines[line])
-        nor = re.match(node_regex, lines[line])
-        cor = re.match(comment_regex, lines[line])
-        clr = re.match(cluster_regex, lines[line])
-        if len(lines[line]):
-            stre = re.match(start_regex, lines[line])
-            stre2 = re.match(start_regex2, lines[line])
-            # Match Filename
-            if nar:
-                name = nar.group(1)
-            # Match coordinates
-            if nor:
-                nodes.append([int(float(nor.group(2))),
-                              int(float(nor.group(3)))])
-            # Match Comments
-            if cor:
-                # Match Clusters
-                if clr:
-                    groups = ast.literal_eval(clr.group(1).replace(" ", ""))
-                elif stre:
-                    startnodes = [int(stre.group(1))]
-                elif stre2:
-                    startnodes = ast.literal_eval(stre2.group(1))
-                else:
-                    comment = comment + cor.group(1) + "\n"
+    for line in lines:
+        if len(line):
+            for regex_name in regexes:
+                match = re.match(regexes[regex_name], line)
+                if match:
+                    apply_match(regex_name, match)
     _file.close()
-    return (name, comment, startnodes, nodes, groups)
+    return result
 
 
 def get_groups(nodes):
     """ return an array holding all occuring colorids of the given nodeset"""
-    groups = []
-    for node in nodes:
-        if node.color not in groups:
-            groups.append(node.color)
-    return groups
+    return list(set([node.color for node in nodes]))
 
 
 def construct_groups_string(nodes):
@@ -121,15 +112,14 @@ def import_tsp(scale):
     # if the user selected a file, delete old data,parse the file and
     # load the new data. If the user canceled the selection, do nothing.
     if filename:
-        name, comment, startnodes, nodes, groups = parse_tsp_file(
-            filename.name)
+        data = parse_tsp_file(filename.name)
 
         node_list = []
         # If the nodes are not grouped, draw them in the currently
         # selected color
-        if groups == []:
+        if data['groups'] == []:
             color = tsputil.COLORS[0]
-            for node in nodes:
+            for node in data['nodes']:
                 new_node = Node(len(node_list),
                                 int(node[0] / scale),
                                 int(node[1] / scale), color)
@@ -138,19 +128,21 @@ def import_tsp(scale):
         # color
         else:
             # iterate over groups
-            for (index, group) in enumerate(groups):
+            for (index, group) in enumerate(data['groups']):
                 # iterate over node ids in the group
                 for nid in group:
                     # get node coordinates
-                    node = nodes[nid - 1]
+                    node = data['nodes'][nid - 1]
                     new_node = Node(len(node_list),
                                     int(node[0] / scale),
                                     int(node[1] / scale),
                                     tsputil.COLORS[index])
-                    if new_node.nid in startnodes:
+                    if new_node.nid in data['startnodes']:
                         new_node.start = True
                     node_list.append(new_node)
-        return(name, comment, startnodes, node_list, groups)
+        result = data
+        result['nodes'] = node_list
+        return result
     else:
         return None
 

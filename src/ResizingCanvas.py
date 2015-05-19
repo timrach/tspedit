@@ -9,9 +9,9 @@ except ImportError:
     # for Python3
     import tkinter as tk
 from Node import Node
-import tsputil
 import math
 import copy
+import tsputil
 
 PADDING = 5
 
@@ -27,17 +27,16 @@ class ResizingCanvas(tk.Canvas):
 
         # Private vars
         self._datacontroller = datacontroller
-        self._height = self.winfo_reqheight()
-        self._width = self.winfo_reqwidth()
+        self._geom = {'width': self.winfo_reqwidth(), 'wscale': 1.0,
+                      'height': self.winfo_reqheight(), 'hscale': 1.0,
+                      'fieldsize': 30}
         self._selected_node = None
-        self._hscale = 1.0
-        self._wscale = 1.0
-        self._fieldsize = 30
-        self._rows = math.floor(self._height / self._fieldsize)
-        self._cols = math.floor(self._width / self._fieldsize)
+        self._rows = math.floor(self._geom['height'] / self._geom['fieldsize'])
+        self._cols = math.floor(self._geom['width'] / self._geom['fieldsize'])
         self._points = [None for i in range(0, int(self._rows * self._cols))]
         self._nodes = copy.copy(self._datacontroller.get_data('nodes'))
-        # Used Tags: 
+
+        # Used Tags:
         # ["selector", "node", "startnode", "path_line", "cog", "com"]
 
         """ register the canvas area for click and hover events.
@@ -58,15 +57,15 @@ class ResizingCanvas(tk.Canvas):
         """ Gets called whenever the window is resized.
         Handles correct item scaling and updates data fields"""
         # determine the ratio of old width/height to new width/height
-        wscale = float(event.width) / self._width
-        hscale = float(event.height) / self._height
-        self._width = event.width
-        self._height = event.height
+        wscale = float(event.width) / self._geom['width']
+        hscale = float(event.height) / self._geom['height']
+        self._geom['width'] = event.width
+        self._geom['height'] = event.height
         # resize the canvas
-        self.config(width=self._width, height=self._height)
+        self.config(width=self._geom['width'], height=self._geom['height'])
         # rescale all the objects tagged with the "all" tag
-        self._hscale *= hscale
-        self._wscale *= wscale
+        self._geom['hscale'] *= hscale
+        self._geom['wscale'] *= wscale
         self.scale("all", 0, 0, wscale, hscale)
 
     def draw_grid(self):
@@ -74,33 +73,40 @@ class ResizingCanvas(tk.Canvas):
         as gray lines."""
         # draw vertical lines
         for x_value in range(0, int(self._cols + 1)):
-            xcoord = x_value * self._fieldsize
-            self.create_line(xcoord, 0, xcoord, self._rows * self._fieldsize,
+            xcoord = x_value * self._geom['fieldsize']
+            self.create_line(xcoord, 0, xcoord,
+                             self._rows * self._geom['fieldsize'],
                              fill="#ddd", tags="grid")
         # draw horizontal lines
         for y_value in range(0, int(self._rows + 1)):
-            ycoord = y_value * self._fieldsize
-            self.create_line(0, ycoord, self._cols * self._fieldsize, ycoord,
-                             fill="#ddd", tags="grid")
+            ycoord = y_value * self._geom['fieldsize']
+            self.create_line(0, ycoord, self._cols * self._geom['fieldsize'],
+                             ycoord, fill="#ddd", tags="grid")
         # draw 0,0 indicator
         # vertical arrow for y axis
         self.create_line(
-            0, 0, 0, self._fieldsize * 2, arrow=tk.LAST, fill="green")
+            0, 0, 0, self._geom['fieldsize'] * 2, arrow=tk.LAST, fill="green")
         # horizontal arrow for x axis
         self.create_line(
-            0, 0, self._fieldsize * 2, 0, arrow=tk.LAST, fill="red")
+            0, 0, self._geom['fieldsize'] * 2, 0, arrow=tk.LAST, fill="red")
         self.move("all", 5, 5)
+
+    def get_selected_cell(self, event):
+        """Returns the coordinates of the cell the mouse is pointed on"""
+        x_value = math.floor(
+            (event.x - PADDING) / (self._geom['fieldsize']
+                                   * self._geom['wscale']))
+        y_value = math.floor(
+            (event.y - PADDING) / (self._geom['fieldsize']
+                                   * self._geom['hscale']))
+        return (x_value, y_value)
 
     def on_motion(self, event):
         """ Gets called whenever the mouse is moved on the canvas.
         Calls the update routine for the position indicator label"""
         # get relative field coordinates
-        x_value = math.floor(
-            (event.x - PADDING) / (self._fieldsize * self._wscale))
-        y_value = math.floor(
-            (event.y - PADDING) / (self._fieldsize * self._hscale))
         self._datacontroller.commit_change(
-            'mouseGridPosition', (x_value, y_value))
+            'mouseGridPosition', self.get_selected_cell(event))
 
     def canvas_clicked(self, event):
         """Callback for the click-event on the canvas area.
@@ -108,10 +114,7 @@ class ResizingCanvas(tk.Canvas):
         If the click was on an existing point, the point is selected
         and the event passed to the other modules."""
         # get relative field coordinates
-        x_value = math.floor(
-            (event.x - PADDING) / (self._fieldsize * self._wscale))
-        y_value = math.floor(
-            (event.y - PADDING) / (self._fieldsize * self._hscale))
+        (x_value, y_value) = self.get_selected_cell(event)
         # only do something if the clicked position is within bounds
         if (x_value < self._cols and y_value < self._rows
                 and x_value >= 0 and y_value >= 0):
@@ -171,29 +174,26 @@ class ResizingCanvas(tk.Canvas):
         """ Draws a small blue ring at the center of mass position """
         self.delete("com")
         if len(self._nodes):
-            result = [0, 0]
-            for node in self._nodes:
-                result = [
-                    result[0] + node.x_coord, result[1] + node.y_coord]
-            x_value = result[0] / len(self._nodes)
-            y_value = result[1] / len(self._nodes)
+            # accumulate x and y coordinates
+            x_sum = sum([node.x_coord for node in self._nodes])
+            y_sum = sum([node.y_coord for node in self._nodes])
+            # normalize accumulated values
+            x_value = x_sum / len(self._nodes)
+            y_value = y_sum / len(self._nodes)
+            # draw the com circle
             self.circle(x_value, y_value, 0.2, outline="#44f",
                         width=3, fill="", tags="com")
+            # lower the circle in the layer hierarchy
             self.tag_lower("com")
 
     def draw_geometrical_center(self):
         """ Draws a small blue ring at the geometrical center """
         self.delete("cog")
         if len(self._nodes):
-            maxima = [0, 0]
-            minima = [float("Inf"), float("Inf")]
-            for node in self._nodes:
-                maxima = [max(node.x_coord, maxima[0]),
-                          max(node.y_coord, maxima[1])]
-                minima = [min(node.x_coord, minima[0]),
-                          min(node.y_coord, minima[1])]
-            x_value = (maxima[0] + minima[0]) / 2
-            y_value = (maxima[1] + minima[1]) / 2
+            x_coords = [node.x_coord for node in self._nodes]
+            y_coords = [node.y_coord for node in self._nodes]
+            x_value = (max(x_coords) + min(x_coords)) / 2
+            y_value = (max(y_coords) + min(y_coords)) / 2
             self.circle(x_value, y_value, 0.2, outline="#f44",
                         width=3, fill="", tags="cog")
             self.tag_lower("cog")
@@ -201,28 +201,33 @@ class ResizingCanvas(tk.Canvas):
     def line(self, x_start, y_start, x_end, y_end):
         """ Draws a line from cell start to cell end """
         line = self.create_line(
-            (x_start * self._fieldsize + (self._fieldsize / 2)) * self._wscale,
-            (y_start * self._fieldsize + (self._fieldsize / 2)) *
-            self._hscale,
-            (x_end * self._fieldsize + (self._fieldsize / 2)) *
-            self._wscale,
-            (y_end * self._fieldsize + (self._fieldsize / 2)) *
-            self._hscale,
+            (x_start * self._geom['fieldsize'] +
+             (self._geom['fieldsize'] / 2)) * self._geom['wscale'],
+            (y_start * self._geom['fieldsize'] +
+             (self._geom['fieldsize'] / 2)) * self._geom['hscale'],
+            (x_end * self._geom['fieldsize'] +
+             (self._geom['fieldsize'] / 2)) * self._geom['wscale'],
+            (y_end * self._geom['fieldsize'] +
+             (self._geom['fieldsize'] / 2)) * self._geom['hscale'],
             fill="#444", tags="path_line",
             activefill="black", width=3)
-        self.move(
-            line, PADDING * self._wscale, PADDING * self._hscale)
+        self.move(line, PADDING * self._geom['wscale'],
+                  PADDING * self._geom['hscale'])
 
     def circle(self, x_value, y_value, _radius, **options):
         """ Draws a circle at the center of cell x,y with radius _radius """
-        radius = _radius * self._fieldsize * 0.7071
-        left = ((x_value + 0.5) * self._fieldsize - radius) * self._wscale
-        top = ((y_value + 0.5) * self._fieldsize - radius) * self._hscale
-        right = ((x_value + 0.5) * self._fieldsize + radius) * self._wscale
-        bottom = ((y_value + 0.5) * self._fieldsize + radius) * self._hscale
+        radius = _radius * self._geom['fieldsize'] * 0.7071
+        left = (
+            (x_value + 0.5) * self._geom['fieldsize'] - radius) * self._geom['wscale']
+        top = (
+            (y_value + 0.5) * self._geom['fieldsize'] - radius) * self._geom['hscale']
+        right = (
+            (x_value + 0.5) * self._geom['fieldsize'] + radius) * self._geom['wscale']
+        bottom = (
+            (y_value + 0.5) * self._geom['fieldsize'] + radius) * self._geom['hscale']
         circ = self.create_oval(left, top, right, bottom, **options)
-        self.move(circ, PADDING * self._wscale,
-                  PADDING * self._hscale)
+        self.move(circ, PADDING * self._geom['wscale'],
+                  PADDING * self._geom['hscale'])
         return circ
 
     def delete_node(self, node):

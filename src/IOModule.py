@@ -21,16 +21,15 @@ class IOModule:
 
         data = tspio.import_tsp(self._datacontroller.get_data('scale'))
         if data:
-            name = data[0]
-            comment = data[1]
-            nodes = data[3]
-            # clear existing node data
-            self._datacontroller.commit_change('nodes', [])
-            # commit new data
+            # commit new file data
             self._datacontroller.commit_change(
-                'fileinfo', {'filename': name, 'comment': comment})
-            self._datacontroller.commit_change('nodes', nodes)
-            self._datacontroller.commit_change('startnode', nodes)
+                'fileinfo', {'filename': data['name'], 'comment': data['comment']})
+            # clear existing nodes data
+            self._datacontroller.commit_change('nodes', [])
+            # commit new nodes data
+            self._datacontroller.commit_change('nodes', data['nodes'])
+            # commit new startnode data
+            self._datacontroller.commit_change('startnode', data['nodes'])
 
     def export_tsp(self):
         """ Export the loaded problem via the IO module in .tsp format"""
