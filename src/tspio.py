@@ -21,7 +21,7 @@ def parse_tsp_file(file):
     holding the nodes and groupinformation"""
     # define regular expressions for the fields to parse
     regexes = {'name': re.compile("NAME : (.*)"),
-               'comment': re.compile("COMMENT : (.*)"),
+               'comment': re.compile("COMMENT : (?!STARTNODE :|STARTNODES : |CLUSTERS :)(.*)"),
                'single_start': re.compile("COMMENT : STARTNODE : ([0-9])+"),
                'multi_start': re.compile("COMMENT : STARTNODES : (.*)"),
                'nodes':
@@ -39,8 +39,6 @@ def parse_tsp_file(file):
         fields vary in data types and structures"""
         if regex_name is 'name':
             result['name'] = match.group(1)
-        elif regex_name is 'comment':
-            result['comment'] += match.group(1) + "\n"
         elif regex_name is 'single_start':
             result['startnodes'] = [int(match.group(1))]
         elif regex_name is 'multi_start':
@@ -48,6 +46,8 @@ def parse_tsp_file(file):
         elif regex_name is 'groups':
             result['groups'] = ast.literal_eval(
                 match.group(1).replace(" ", ""))
+        elif regex_name is 'comment':
+            result['comment'] += match.group(1) + "\n"
         elif regex_name is 'nodes':
             result['nodes'].append([int(float(match.group(2))),
                                     int(float(match.group(3)))])
@@ -119,11 +119,8 @@ def import_tsp(scale):
         # selected color
         if data['groups'] == []:
             color = tsputil.COLORS[0]
-            for node in data['nodes']:
-                new_node = Node(len(node_list),
-                                int(node[0] / scale),
-                                int(node[1] / scale), color)
-                node_list.append(new_node)
+            node_list = [Node(index, int(node[0] / scale), int(node[1] / scale), color)
+                         for (index, node) in enumerate(data['nodes'])]
         # if the nodes are grouped, draw nodes from the same group in the same
         # color
         else:
