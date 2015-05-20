@@ -119,13 +119,13 @@ class MainApplication(tk.Frame):
                              command=self.clear,
                              accelerator="Ctrl+N")
         self.bind_all("<Control-n>", lambda e: self.clear())
-        filemenu.add_command(label="Import .tsp",
+        filemenu.add_command(label="Import .tsp file",
                              command=self.iomodule.import_tsp,
-                             accelerator="Ctrl+I")
-        self.bind_all("<Control-i>", lambda e: self.iomodule.import_tsp())
-        filemenu.add_command(label="Export .tsp",
+                             accelerator="Ctrl+O")
+        self.bind_all("<Control-o>", lambda e: self.iomodule.import_tsp())
+        filemenu.add_command(label="Save .tsp file",
                              command=self.iomodule.export_tsp,
-                             accelerator="Ctrl+E")
-        self.bind_all("<Control-e>", lambda e: self.iomodule.export_tsp())
+                             accelerator="Ctrl+S")
+        self.bind_all("<Control-s>", lambda e: self.iomodule.export_tsp())
 
         menubar.add_cascade(label="File", menu=filemenu)
