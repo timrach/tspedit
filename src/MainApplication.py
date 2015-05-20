@@ -127,5 +127,4 @@ class MainApplication(tk.Frame):
                              command=self.iomodule.export_tsp,
                              accelerator="Ctrl+S")
         self.bind_all("<Control-s>", lambda e: self.iomodule.export_tsp())
-
         menubar.add_cascade(label="File", menu=filemenu)
