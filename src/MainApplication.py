@@ -127,6 +127,9 @@ class MainApplication(tk.Frame):
                              command=self.iomodule.export_tsp,
                              accelerator="Ctrl+S")
         self.bind_all("<Control-s>", lambda e: self.iomodule.export_tsp())
-
+        filemenu.add_command(label="Quit",
+                             command=self._parent.quit,
+                             accelerator="Ctrl+q")
+        self.bind_all("<Control-q>", lambda e: self._parent.quit())
 
         menubar.add_cascade(label="File", menu=filemenu)
