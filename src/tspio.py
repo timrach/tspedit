@@ -170,7 +170,7 @@ def export_tsp(nodes, scale, comment, pre_filename=None):
         return os.path.basename(filename.name)
 
 
-def export_tikz(nodes, scale):
+def export_tikz(nodes, scale, path):
     """ Exports the problem data as a tikz graphic in .tex format  """
     filename = asksaveasfile(defaultextension=".tex")
     if filename:
@@ -193,12 +193,23 @@ def export_tikz(nodes, scale):
             _file.write(
                 """\\addplot [color=black,mark size=5.0pt,
                         only marks,mark=*,mark options={solid,
-                        fill=""" + tsputil.COLORS[group].lower() +
-                "},forget plot]\n")
+                        fill=""" + group.lower() + "},forget plot]\n")
             _file.write("table[row sep=crcr]{%\n")
             for node in nodes:
                 if node.color == group:
                     _file.write(
+                        str(node.x_coord * scale) + " " +
+                        str(node.y_coord * scale) + "\\\\\n")
+            _file.write("};\n")
+
+        if not path is None:
+            _file.write("\\addplot [draw=black,forget plot]\n")
+            _file.write("table[row sep=crcr]{%\n")
+            for path_node in path['Tour']:
+                print(path_node)
+                node = nodes[int(path_node)]
+                print(node)
+                _file.write(
                         str(node.x_coord * scale) + " " +
                         str(node.y_coord * scale) + "\\\\\n")
             _file.write("};\n")

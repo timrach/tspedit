@@ -29,7 +29,7 @@ class ResizingCanvas(tk.Canvas):
         self._datacontroller = datacontroller
         self._geom = {'width': self.winfo_reqwidth(), 'wscale': 1.0,
                       'height': self.winfo_reqheight(), 'hscale': 1.0,
-                      'fieldsize': 30}
+                      'fieldsize': 25}
         self._selected_node = None
         self._rows = math.floor(self._geom['height'] / self._geom['fieldsize'])
         self._cols = math.floor(self._geom['width'] / self._geom['fieldsize'])

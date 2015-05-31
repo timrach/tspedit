@@ -127,4 +127,6 @@ class MainApplication(tk.Frame):
                              command=self.iomodule.export_tsp,
                              accelerator="Ctrl+S")
         self.bind_all("<Control-s>", lambda e: self.iomodule.export_tsp())
+        filemenu.add_command(label="Export TIKZ Figure",
+                             command=self.iomodule.export_tikz)
         menubar.add_cascade(label="File", menu=filemenu)

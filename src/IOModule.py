@@ -42,3 +42,10 @@ class IOModule:
         filename = tspio.export_tsp(nodes, scale, comment)
         self._datacontroller.commit_change(
             'fileinfo', {'filename': filename, 'comment': comment})
+
+    def export_tikz(self):
+        """ Export the loaded problem via the IO module as a tikz graphic in a .tex file"""
+        nodes = self._datacontroller.get_data('nodes')
+        scale = self._datacontroller.get_data('scale')
+        path = self._datacontroller.get_data('path')
+        tspio.export_tikz(nodes, scale, path)
